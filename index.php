@@ -11,12 +11,13 @@ if (!file_exists(__DIR__ . '/includes/config.php')) {
 
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/translations.php';
 
 // جلب عدد المنتجات حسب الفئة
 $productCounts = getProductCountByCategory();
 ?>
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="<?php echo getCurrentLanguage(); ?>" dir="<?php echo getLanguageDirection(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,11 +44,16 @@ $productCounts = getProductCountByCategory();
     <!-- Header -->
     <header class="site-header">
         <div class="container">
-            <div class="site-logo">
-                <h1>PYRASTORE</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <div class="site-logo">
+                        <h1>PYRASTORE</h1>
+                    </div>
+                    <p class="site-tagline"><?php echo t('site_tagline'); ?></p>
+                    <p class="site-description"><?php echo t('site_description'); ?></p>
+                </div>
+                <?php include __DIR__ . '/includes/language_switcher.php'; ?>
             </div>
-            <p class="site-tagline">UAE PICKS</p>
-            <p class="site-description">أفضل المنتجات من أمازون الإمارات بأسعار مميزة</p>
         </div>
     </header>
 
@@ -61,7 +67,7 @@ $productCounts = getProductCountByCategory();
                         type="text"
                         id="searchInput"
                         class="search-input"
-                        placeholder="ابحث عن منتج..."
+                        placeholder="<?php echo t('search_placeholder'); ?>"
                         autocomplete="off">
                     <span class="search-icon"><i class="fas fa-search"></i></span>
                 </div>
@@ -70,35 +76,35 @@ $productCounts = getProductCountByCategory();
             <!-- Category Filters -->
             <div class="category-filters">
                 <button class="category-btn" onclick="setCategory('')">
-                    <span><i class="fas fa-th"></i> الكل</span>
+                    <span><i class="fas fa-th"></i> <?php echo t('category_all'); ?></span>
                     <span class="category-count"><?php echo array_sum($productCounts); ?></span>
                 </button>
                 <button class="category-btn" data-category="electronics" onclick="setCategory('electronics')">
-                    <span><i class="fas fa-mobile-alt"></i> إلكترونيات</span>
+                    <span><i class="fas fa-mobile-alt"></i> <?php echo t('category_electronics'); ?></span>
                     <span class="category-count"><?php echo $productCounts['electronics'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="fashion" onclick="setCategory('fashion')">
-                    <span><i class="fas fa-tshirt"></i> أزياء</span>
+                    <span><i class="fas fa-tshirt"></i> <?php echo t('category_fashion'); ?></span>
                     <span class="category-count"><?php echo $productCounts['fashion'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="home" onclick="setCategory('home')">
-                    <span><i class="fas fa-home"></i> منزل ومطبخ</span>
+                    <span><i class="fas fa-home"></i> <?php echo t('category_home'); ?></span>
                     <span class="category-count"><?php echo $productCounts['home'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="sports" onclick="setCategory('sports')">
-                    <span><i class="fas fa-futbol"></i> رياضة</span>
+                    <span><i class="fas fa-futbol"></i> <?php echo t('category_sports'); ?></span>
                     <span class="category-count"><?php echo $productCounts['sports'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="beauty" onclick="setCategory('beauty')">
-                    <span><i class="fas fa-spa"></i> جمال وعناية</span>
+                    <span><i class="fas fa-spa"></i> <?php echo t('category_beauty'); ?></span>
                     <span class="category-count"><?php echo $productCounts['beauty'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="books" onclick="setCategory('books')">
-                    <span><i class="fas fa-book"></i> كتب</span>
+                    <span><i class="fas fa-book"></i> <?php echo t('category_books'); ?></span>
                     <span class="category-count"><?php echo $productCounts['books'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="toys" onclick="setCategory('toys')">
-                    <span><i class="fas fa-gamepad"></i> ألعاب</span>
+                    <span><i class="fas fa-gamepad"></i> <?php echo t('category_toys'); ?></span>
                     <span class="category-count"><?php echo $productCounts['toys'] ?? 0; ?></span>
                 </button>
             </div>
@@ -107,15 +113,15 @@ $productCounts = getProductCountByCategory();
             <div class="advanced-filters">
                 <!-- Price Range -->
                 <div class="filter-group">
-                    <span class="filter-label">السعر:</span>
-                    <input type="number" id="minPrice" class="filter-input" placeholder="من" min="0">
+                    <span class="filter-label"><?php echo t('filter_price'); ?></span>
+                    <input type="number" id="minPrice" class="filter-input" placeholder="<?php echo t('filter_from'); ?>" min="0">
                     <span>-</span>
-                    <input type="number" id="maxPrice" class="filter-input" placeholder="إلى" min="0">
+                    <input type="number" id="maxPrice" class="filter-input" placeholder="<?php echo t('filter_to'); ?>" min="0">
                 </div>
 
                 <!-- Discount Filter -->
                 <div class="filter-group">
-                    <span class="filter-label">الخصم:</span>
+                    <span class="filter-label"><?php echo t('filter_discount'); ?></span>
                     <div class="discount-filter">
                         <button class="discount-btn" data-discount="10" onclick="setDiscount('10')">10%+</button>
                         <button class="discount-btn" data-discount="20" onclick="setDiscount('20')">20%+</button>
@@ -126,18 +132,18 @@ $productCounts = getProductCountByCategory();
 
                 <!-- Sort By -->
                 <div class="filter-group">
-                    <span class="filter-label">ترتيب حسب:</span>
+                    <span class="filter-label"><?php echo t('filter_sort_by'); ?></span>
                     <select id="sortBy" class="sort-select">
-                        <option value="newest">الأحدث</option>
-                        <option value="price_asc">السعر: منخفض → مرتفع</option>
-                        <option value="price_desc">السعر: مرتفع → منخفض</option>
-                        <option value="discount">الأعلى خصماً</option>
+                        <option value="newest"><?php echo t('sort_newest'); ?></option>
+                        <option value="price_asc"><?php echo t('sort_price_asc'); ?></option>
+                        <option value="price_desc"><?php echo t('sort_price_desc'); ?></option>
+                        <option value="discount"><?php echo t('sort_discount'); ?></option>
                     </select>
                 </div>
 
                 <!-- Reset Button -->
                 <button class="reset-btn" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> إعادة تعيين
+                    <i class="fas fa-redo"></i> <?php echo t('filter_reset'); ?>
                 </button>
             </div>
         </div>
@@ -145,7 +151,7 @@ $productCounts = getProductCountByCategory();
 
     <!-- Results Counter -->
     <div class="container">
-        <div id="resultsCounter" class="results-counter">جاري التحميل...</div>
+        <div id="resultsCounter" class="results-counter"><?php echo t('loading'); ?></div>
     </div>
 
     <!-- Products Grid -->
@@ -154,7 +160,7 @@ $productCounts = getProductCountByCategory();
             <!-- سيتم ملؤها عبر JavaScript -->
             <div class="loading">
                 <div class="spinner"></div>
-                <p style="margin-top: 1rem; color: var(--muted-color);">جاري تحميل المنتجات...</p>
+                <p style="margin-top: 1rem; color: var(--muted-color);"><?php echo t('loading_products'); ?></p>
             </div>
         </div>
     </main>
@@ -163,12 +169,12 @@ $productCounts = getProductCountByCategory();
     <footer class="site-footer">
         <div class="container">
             <div class="footer-links">
-                <a href="#">سياسة الخصوصية</a>
-                <a href="#">شروط الاستخدام</a>
-                <a href="/admin/login.php">تسجيل الدخول</a>
+                <a href="#"><?php echo t('privacy_policy'); ?></a>
+                <a href="#"><?php echo t('terms_of_use'); ?></a>
+                <a href="/admin/login.php"><?php echo t('admin_login'); ?></a>
             </div>
             <p class="copyright">
-                &copy; <?php echo date('Y'); ?> PYRASTORE - جميع الحقوق محفوظة
+                &copy; <?php echo date('Y'); ?> PYRASTORE - <?php echo t('all_rights_reserved'); ?>
             </p>
         </div>
     </footer>
