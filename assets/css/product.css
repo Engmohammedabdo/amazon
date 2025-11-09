@@ -154,13 +154,10 @@
 .product-detail-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: var(--text-color);
+    color: #1a1a1a !important;
     margin-bottom: 1rem;
     line-height: 1.2;
-    background: linear-gradient(135deg, var(--text-color) 0%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    /* Removed gradient to ensure text is always visible */
 }
 
 /* Price Display */
