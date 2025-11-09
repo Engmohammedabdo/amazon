@@ -5,6 +5,7 @@
 
 // ==================== Image Gallery Functionality ====================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Product page JavaScript loaded');
     initializeImageGallery();
     initializeLightbox();
     initializeShareButtons();
@@ -14,13 +15,31 @@ function initializeImageGallery() {
     const thumbnails = document.querySelectorAll('.thumbnail-item img');
     const mainImage = document.getElementById('mainImage');
 
-    if (!thumbnails.length || !mainImage) return;
+    console.log('Gallery init - Thumbnails found:', thumbnails.length);
+    console.log('Gallery init - Main image:', mainImage ? 'Found' : 'Not found');
 
-    thumbnails.forEach(function(thumbnail) {
+    if (!thumbnails.length || !mainImage) {
+        console.warn('Gallery initialization failed - missing elements');
+        return;
+    }
+
+    thumbnails.forEach(function(thumbnail, index) {
+        console.log('Adding click handler to thumbnail', index + 1);
+
+        // Add click event
         thumbnail.addEventListener('click', function(e) {
-            // Update main image
-            mainImage.src = this.src;
-            mainImage.alt = this.alt;
+            e.preventDefault();
+            console.log('Thumbnail clicked:', index + 1, 'New src:', this.src);
+
+            // Store current src for comparison
+            const oldSrc = mainImage.src;
+            const newSrc = this.src;
+
+            // Update main image source
+            mainImage.src = newSrc;
+            mainImage.alt = this.alt || 'Product Image';
+
+            console.log('Main image updated from:', oldSrc, 'to:', newSrc);
 
             // Remove active class from all thumbnail containers
             document.querySelectorAll('.thumbnail-item').forEach(function(item) {
@@ -28,24 +47,35 @@ function initializeImageGallery() {
             });
 
             // Add active class to clicked thumbnail's parent
-            this.closest('.thumbnail-item').classList.add('active');
+            const parent = this.closest('.thumbnail-item');
+            if (parent) {
+                parent.classList.add('active');
+                console.log('Active class added to thumbnail', index + 1);
+            }
 
             // Add smooth zoom animation
+            mainImage.style.transition = 'transform 0.3s ease';
             mainImage.style.transform = 'scale(0.95)';
             setTimeout(function() {
                 mainImage.style.transform = 'scale(1)';
             }, 150);
         });
 
-        // Add hover effect
+        // Add hover effect for desktop
         thumbnail.addEventListener('mouseenter', function() {
+            this.style.transition = 'transform 0.2s ease';
             this.style.transform = 'scale(1.05)';
         });
 
         thumbnail.addEventListener('mouseleave', function() {
             this.style.transform = 'scale(1)';
         });
+
+        // Make thumbnails more obviously clickable
+        thumbnail.style.cursor = 'pointer';
     });
+
+    console.log('Gallery initialized successfully with', thumbnails.length, 'thumbnails');
 }
 
 // ==================== Lightbox Functionality ====================
