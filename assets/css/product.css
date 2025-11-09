@@ -313,10 +313,14 @@
 }
 
 .product-description {
+    display: block !important;
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
     font-size: 1.125rem;
     line-height: 1.8;
     color: var(--text-secondary);
-    white-space: pre-line;
+    margin-bottom: 1.25rem;
 }
 
 /* ==================== Reviews Section ==================== */
