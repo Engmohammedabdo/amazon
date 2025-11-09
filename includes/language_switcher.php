@@ -11,7 +11,6 @@ $currentLang = getCurrentLanguage();
     <button
         type="button"
         class="lang-btn <?php echo $currentLang === 'ar' ? 'active' : ''; ?>"
-        onclick="switchLanguage('ar')"
         title="العربية"
         style="padding: 0.5rem 1rem; border: 2px solid #FF6B35; background: <?php echo $currentLang === 'ar' ? '#FF6B35' : '#f8f9fa'; ?>; color: <?php echo $currentLang === 'ar' ? 'white' : '#FF6B35'; ?>; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
         AR
@@ -19,7 +18,6 @@ $currentLang = getCurrentLanguage();
     <button
         type="button"
         class="lang-btn <?php echo $currentLang === 'en' ? 'active' : ''; ?>"
-        onclick="switchLanguage('en')"
         title="English"
         style="padding: 0.5rem 1rem; border: 2px solid #FF6B35; background: <?php echo $currentLang === 'en' ? '#FF6B35' : '#f8f9fa'; ?>; color: <?php echo $currentLang === 'en' ? 'white' : '#FF6B35'; ?>; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
         EN

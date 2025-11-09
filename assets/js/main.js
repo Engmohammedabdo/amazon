@@ -542,3 +542,13 @@ if ('serviceWorker' in navigator) {
         // navigator.serviceWorker.register('/sw.js');
     });
 }
+
+// ==================== Attach Language Switcher Listeners ====================
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const isArabic = this.textContent.trim() === 'AR';
+            switchLanguage(isArabic ? 'ar' : 'en');
+        });
+    });
+});
