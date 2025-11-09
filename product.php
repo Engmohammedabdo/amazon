@@ -387,6 +387,8 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         </div>
     </footer>
 
+    <!-- Main JavaScript -->
+    <script src="/assets/js/main.js"></script>
     <!-- Product Page JavaScript -->
     <script src="/assets/js/product.js"></script>
 </body>

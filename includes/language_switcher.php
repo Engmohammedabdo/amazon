@@ -23,15 +23,3 @@ $currentLang = getCurrentLanguage();
         EN
     </button>
 </div>
-
-<script>
-function switchLanguage(lang) {
-    // Set cookie for 1 year
-    const expiryDate = new Date();
-    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    document.cookie = `site_language=${lang}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax`;
-
-    // Reload page to apply language change
-    window.location.reload();
-}
-</script>

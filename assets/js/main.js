@@ -3,6 +3,29 @@
  * وظائف الموقع الأمامي مع تحسينات الأنيميشن
  */
 
+// ==================== Language Switcher ====================
+function switchLanguage(lang) {
+    // Set cookie for 1 year
+    const expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie = `site_language=${lang}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax`;
+
+    // Reload page to apply language change
+    window.location.reload();
+}
+
+// Get current language from cookie
+function getCurrentLanguage() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'site_language') {
+            return value;
+        }
+    }
+    return 'ar'; // Default to Arabic
+}
+
 // ==================== Session Management ====================
 function getOrCreateSessionId() {
     let sessionId = localStorage.getItem('pyra_session');
