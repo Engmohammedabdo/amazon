@@ -1,0 +1,40 @@
+# PyraStore - Git Ignore File
+
+# Configuration files with sensitive data
+config/database.php
+
+# Uploads directory
+assets/uploads/*
+!assets/uploads/.gitkeep
+
+# Logs
+*.log
+error_log
+php_errors.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Environment files
+.env
+.env.local
+
+# Bluehost specific
+.cpanel/
+.htpasswds/
+tmp/
+logs/
