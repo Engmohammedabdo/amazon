@@ -608,3 +608,44 @@ if (window.innerWidth < 768) {
   // Add class to body for padding
   document.body.classList.add('has-sticky-cta');
 }
+
+// ==================== Smart Sticky CTA for Product Page ====================
+if (document.getElementById('stickyCTAProduct') && window.innerWidth < 768) {
+  const stickyBar = document.getElementById('stickyCTAProduct');
+  const mainButton = document.querySelector('.buy-now-btn'); // Main buy button
+  
+  window.addEventListener('scroll', function() {
+    if (!mainButton) {
+      // Fallback: simple show/hide
+      if (window.scrollY > 150) {
+        stickyBar.classList.add('show');
+      } else {
+        stickyBar.classList.remove('show');
+      }
+      return;
+    }
+    
+    // Get main button position
+    const buttonRect = mainButton.getBoundingClientRect();
+    const buttonInView = buttonRect.top < window.innerHeight && buttonRect.bottom > 0;
+    
+    const scrollY = window.scrollY;
+    
+    // State 1: Top of page - Show sticky
+    if (scrollY < 150) {
+      stickyBar.classList.add('show');
+    }
+    // State 2: Main button in viewport - Hide sticky
+    else if (buttonInView) {
+      stickyBar.classList.remove('show');
+    }
+    // State 3: Past main button - Show sticky again
+    else if (scrollY > 150) {
+      stickyBar.classList.add('show');
+    }
+  }, { passive: true });
+  
+  // Show initially
+  stickyBar.classList.add('show');
+  document.body.classList.add('has-sticky-cta');
+}

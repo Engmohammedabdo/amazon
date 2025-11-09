@@ -391,5 +391,19 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     <script src="/assets/js/main.js"></script>
     <!-- Product Page JavaScript -->
     <script src="/assets/js/product.js"></script>
+
+    <!-- Sticky CTA Bar (Mobile Only) - Product Page -->
+    <div class="sticky-cta-bar" id="stickyCTAProduct">
+        <div class="sticky-cta-price">
+            <div class="price"><?php echo formatPrice($product['price']); ?> <?php echo t('currency'); ?></div>
+            <?php if (!empty($product['original_price']) && $product['original_price'] > $product['price']): ?>
+                <div class="original"><?php echo formatPrice($product['original_price']); ?> <?php echo t('currency'); ?></div>
+            <?php endif; ?>
+        </div>
+        <button class="sticky-cta-btn" onclick="buyProduct()">
+            <i class="fas fa-shopping-cart"></i>
+            <span><?php echo t('buy_now'); ?></span>
+        </button>
+    </div>
 </body>
 </html>
