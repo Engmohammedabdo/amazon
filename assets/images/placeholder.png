@@ -1,0 +1,5 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#f5f5f5"/>
+  <text x="50%" y="45%" text-anchor="middle" font-family="Arial" font-size="48" fill="#999">🛍️</text>
+  <text x="50%" y="60%" text-anchor="middle" font-family="Arial" font-size="16" fill="#999">No Image</text>
+</svg>

@@ -1,0 +1,23 @@
+# PyraStore - Robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow admin area
+Disallow: /admin/
+Disallow: /config/
+Disallow: /api/
+
+# Disallow installation files
+Disallow: /install.php
+Disallow: /test-site.php
+Disallow: /fix-encoding.php
+
+# Allow images and assets
+Allow: /assets/
+
+# Sitemap (you can generate this later)
+# Sitemap: https://events.pyramedia.info/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
