@@ -44,6 +44,43 @@ A modern, feature-rich Amazon Affiliate store built specifically for the UAE mar
 
 ### Installation
 
+#### ⚡ Method 1: Automatic Installation (RECOMMENDED)
+
+**Super Easy - Just 3 Steps!**
+
+1. **Upload all files** to your hosting directory
+   ```bash
+   Upload to: public_html/
+   ```
+
+2. **Open the installer** in your browser:
+   ```
+   https://yourdomain.com/install.php
+   ```
+
+3. **Follow the wizard**:
+   - Step 1: System check ✓ (automatic)
+   - Step 2: Enter database details
+   - Step 3: Configure site & admin
+   - Step 4: Done! 🎉
+
+4. **Delete install.php** after installation for security
+
+**That's it!** The installer will automatically:
+- Check system requirements
+- Create database tables
+- Import sample data
+- Configure everything
+- Set up admin account
+
+For detailed instructions, see [INSTALL.md](INSTALL.md)
+
+---
+
+#### 🛠️ Method 2: Manual Installation
+
+If you prefer manual installation:
+
 #### 1. Upload Files
 Upload all files to your Bluehost public_html directory (or subdomain folder).
 
