@@ -9,6 +9,7 @@ $currentLang = getCurrentLanguage();
 
 <div class="language-switcher" style="display: flex; gap: 0.5rem; align-items: center;">
     <button
+        type="button"
         class="lang-btn <?php echo $currentLang === 'ar' ? 'active' : ''; ?>"
         onclick="switchLanguage('ar')"
         title="العربية"
@@ -16,6 +17,7 @@ $currentLang = getCurrentLanguage();
         AR
     </button>
     <button
+        type="button"
         class="lang-btn <?php echo $currentLang === 'en' ? 'active' : ''; ?>"
         onclick="switchLanguage('en')"
         title="English"
