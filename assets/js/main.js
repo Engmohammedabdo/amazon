@@ -5,6 +5,9 @@
 
 // ==================== Language Switcher ====================
 function switchLanguage(lang) {
+    // Delete old 'lang' cookie if it exists (cleanup)
+    document.cookie = 'lang=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
     // Set cookie for 1 year
     const expiryDate = new Date();
     expiryDate.setFullYear(expiryDate.getFullYear() + 1);
