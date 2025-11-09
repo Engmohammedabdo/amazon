@@ -1,6 +1,6 @@
 /**
  * PYRASTORE - Main JavaScript
- * وظائف الموقع الأمامي
+ * وظائف الموقع الأمامي مع تحسينات الأنيميشن
  */
 
 // ==================== Session Management ====================
@@ -49,6 +49,13 @@ function buyNow(event, productId, affiliateLink) {
     event.stopPropagation();
     trackEvent('purchase_button_click', productId);
 
+    // إضافة تأثير الضغط
+    const btn = event.currentTarget;
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        btn.style.transform = '';
+    }, 150);
+
     // فتح رابط الأفلييت في نافذة جديدة
     window.open(affiliateLink, '_blank', 'noopener,noreferrer');
 }
@@ -85,7 +92,12 @@ function setCategory(category) {
     // إضافة active للزر المحدد
     if (category) {
         const btn = document.querySelector(`[data-category="${category}"]`);
-        if (btn) btn.classList.add('active');
+        if (btn) {
+            btn.classList.add('active');
+            // تأثير الضغط
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => btn.style.transform = '', 150);
+        }
     }
 
     currentFilters.category = category;
@@ -101,7 +113,12 @@ function setDiscount(discount) {
     // إضافة active للزر المحدد
     if (discount) {
         const btn = document.querySelector(`[data-discount="${discount}"]`);
-        if (btn) btn.classList.add('active');
+        if (btn) {
+            btn.classList.add('active');
+            // تأثير الضغط
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => btn.style.transform = '', 150);
+        }
     }
 
     currentFilters.discount = discount;
@@ -136,13 +153,8 @@ function loadProducts() {
     const container = document.getElementById('productsContainer');
     const counter = document.getElementById('resultsCounter');
 
-    // عرض حالة التحميل
-    container.innerHTML = `
-        <div class="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 1rem; color: var(--muted-color);">جاري التحميل...</p>
-        </div>
-    `;
+    // عرض Skeleton Loader بدلاً من Spinner
+    container.innerHTML = generateSkeletonCards(6);
 
     // بناء query string
     const params = new URLSearchParams();
@@ -171,14 +183,39 @@ function loadProducts() {
         });
 }
 
+function generateSkeletonCards(count) {
+    let html = '';
+    for (let i = 0; i < count; i++) {
+        html += `
+            <div class="product-card skeleton">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-text"></div>
+                    <div class="skeleton-text short"></div>
+                    <div class="skeleton-button"></div>
+                </div>
+            </div>
+        `;
+    }
+    return html;
+}
+
 function displayProducts(products) {
     const container = document.getElementById('productsContainer');
 
-    const html = products.map(product => `
-        <div class="product-card" onclick="viewProduct(${product.id})">
+    const html = products.map((product, index) => `
+        <div class="product-card fade-in-up" style="animation-delay: ${index * 0.1}s" onclick="viewProduct(${product.id})">
             <div class="product-image-wrapper">
-                <img src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.title)}" class="product-image">
-                <div class="category-badge">${getCategoryIcon(product.category)} ${getCategoryNameAr(product.category)}</div>
+                <img src="${escapeHtml(product.image_url)}"
+                     alt="${escapeHtml(product.title)}"
+                     class="product-image"
+                     loading="lazy"
+                     onerror="this.src='/assets/images/placeholder.jpg'">
+                <div class="category-badge">
+                    <i class="fas fa-${getCategoryIconFA(product.category)}"></i>
+                    ${getCategoryNameAr(product.category)}
+                </div>
                 ${product.discount_percentage ? `<div class="discount-badge">-${product.discount_percentage}%</div>` : ''}
             </div>
             <div class="product-content">
@@ -192,7 +229,7 @@ function displayProducts(products) {
                     ${product.original_price ? `<div class="product-savings">وفر ${formatPrice(product.original_price - product.price)} درهم</div>` : ''}
                 </div>
                 <button class="buy-btn" onclick="buyNow(event, ${product.id}, '${escapeHtml(product.affiliate_link)}')">
-                    <span>🛒</span>
+                    <i class="fas fa-shopping-cart"></i>
                     <span>اشتري الآن</span>
                 </button>
             </div>
@@ -200,14 +237,22 @@ function displayProducts(products) {
     `).join('');
 
     container.innerHTML = html;
+
+    // تفعيل Intersection Observer للكروت
+    observeProductCards();
 }
 
 function showEmptyState() {
     const container = document.getElementById('productsContainer');
     container.innerHTML = `
-        <div class="empty-state">
-            <div class="empty-state-icon">🔍</div>
+        <div class="empty-state fade-in">
+            <div class="empty-state-icon">
+                <i class="fas fa-search fa-3x"></i>
+            </div>
             <p class="empty-state-text">لا توجد منتجات تطابق البحث</p>
+            <button class="btn" onclick="resetFilters()" style="margin-top: 1rem;">
+                <i class="fas fa-redo"></i> إعادة تعيين الفلاتر
+            </button>
         </div>
     `;
 }
@@ -215,10 +260,14 @@ function showEmptyState() {
 function showErrorState() {
     const container = document.getElementById('productsContainer');
     container.innerHTML = `
-        <div class="empty-state">
-            <div class="empty-state-icon">⚠️</div>
+        <div class="empty-state fade-in">
+            <div class="empty-state-icon">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+            </div>
             <p class="empty-state-text">حدث خطأ أثناء تحميل المنتجات</p>
-            <button class="btn" onclick="loadProducts()" style="margin-top: 1rem;">إعادة المحاولة</button>
+            <button class="btn" onclick="loadProducts()" style="margin-top: 1rem;">
+                <i class="fas fa-sync-alt"></i> إعادة المحاولة
+            </button>
         </div>
     `;
 }
@@ -227,7 +276,80 @@ function updateCounter(showing, total) {
     const counter = document.getElementById('resultsCounter');
     if (counter) {
         counter.textContent = `عرض ${showing} من ${total} منتج`;
+        counter.style.animation = 'fadeIn 0.5s ease';
     }
+}
+
+// ==================== Intersection Observer للأنيميشن ====================
+function observeProductCards() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        observer.observe(card);
+    });
+}
+
+// ==================== Scroll Effects ====================
+let lastScrollTop = 0;
+const header = document.querySelector('.site-header');
+const filtersSection = document.querySelector('.filters-section');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // إخفاء/إظهار الهيدر عند السكرول
+    if (scrollTop > lastScrollTop && scrollTop > 100) {
+        // السكرول للأسفل
+        if (header) header.style.transform = 'translateY(-100%)';
+    } else {
+        // السكرول للأعلى
+        if (header) header.style.transform = 'translateY(0)';
+    }
+
+    // تثبيت الفلاتر عند السكرول
+    if (filtersSection) {
+        if (scrollTop > 200) {
+            filtersSection.classList.add('sticky');
+        } else {
+            filtersSection.classList.remove('sticky');
+        }
+    }
+
+    lastScrollTop = scrollTop;
+}, { passive: true });
+
+// ==================== Smooth Scroll ====================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// ==================== Parallax Effect للهيدر ====================
+const heroSection = document.querySelector('.hero-section');
+if (heroSection) {
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        heroSection.style.transform = `translateY(${scrolled * 0.5}px)`;
+        heroSection.style.opacity = 1 - (scrolled / 500);
+    }, { passive: true });
 }
 
 // ==================== Helper Functions ====================
@@ -260,27 +382,99 @@ function getCategoryNameAr(category) {
     return names[category] || 'منتجات أخرى';
 }
 
-function getCategoryIcon(category) {
+function getCategoryIconFA(category) {
     const icons = {
-        'electronics': '📱',
-        'fashion': '👔',
-        'home': '🏠',
-        'sports': '⚽',
-        'beauty': '💄',
-        'books': '📚',
-        'toys': '🧸',
-        'other': '🛍️'
+        'electronics': 'mobile-alt',
+        'fashion': 'tshirt',
+        'home': 'home',
+        'sports': 'futbol',
+        'beauty': 'spa',
+        'books': 'book',
+        'toys': 'gamepad',
+        'other': 'shopping-bag'
     };
-    return icons[category] || '🛍️';
+    return icons[category] || 'shopping-bag';
 }
 
 // ==================== Search Debounce ====================
 let searchTimeout;
 function handleSearchInput() {
     clearTimeout(searchTimeout);
+
+    // تأثير بصري للبحث
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.style.borderColor = 'var(--primary)';
+        setTimeout(() => {
+            searchInput.style.borderColor = '';
+        }, 300);
+    }
+
     searchTimeout = setTimeout(() => {
         updateFilters();
     }, 500);
+}
+
+// ==================== Image Lazy Loading ====================
+function lazyLoadImages() {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+    }
+}
+
+// ==================== Scroll to Top Button ====================
+function createScrollTopButton() {
+    const scrollBtn = document.createElement('button');
+    scrollBtn.className = 'scroll-top-btn';
+    scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    scrollBtn.setAttribute('aria-label', 'العودة للأعلى');
+    document.body.appendChild(scrollBtn);
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollBtn.classList.add('visible');
+        } else {
+            scrollBtn.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    scrollBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// ==================== Price Range Formatter ====================
+function formatPriceRange() {
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+
+    if (minPrice) {
+        minPrice.addEventListener('input', function() {
+            this.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${(this.value / this.max) * 100}%, var(--border-color) ${(this.value / this.max) * 100}%, var(--border-color) 100%)`;
+        });
+    }
+
+    if (maxPrice) {
+        maxPrice.addEventListener('input', function() {
+            this.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${(this.value / this.max) * 100}%, var(--border-color) ${(this.value / this.max) * 100}%, var(--border-color) 100%)`;
+        });
+    }
 }
 
 // ==================== Initialize ====================
@@ -305,4 +499,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxPrice = document.getElementById('maxPrice');
     if (minPrice) minPrice.addEventListener('change', updateFilters);
     if (maxPrice) maxPrice.addEventListener('change', updateFilters);
+
+    // تهيئة المميزات الإضافية
+    lazyLoadImages();
+    createScrollTopButton();
+    formatPriceRange();
+
+    // تحسين الأداء: Passive Event Listeners
+    document.addEventListener('touchstart', function() {}, { passive: true });
 });
+
+// ==================== Service Worker للتخزين المؤقت ====================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        // يمكن تفعيل Service Worker لاحقاً لتحسين الأداء
+        // navigator.serviceWorker.register('/sw.js');
+    });
+}

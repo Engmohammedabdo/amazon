@@ -28,6 +28,9 @@ $productCounts = getProductCountByCategory();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="/assets/css/style.css">
 
@@ -99,42 +102,42 @@ $productCounts = getProductCountByCategory();
                         class="search-input"
                         placeholder="ابحث عن منتج..."
                         autocomplete="off">
-                    <span class="search-icon">🔍</span>
+                    <span class="search-icon"><i class="fas fa-search"></i></span>
                 </div>
             </div>
 
             <!-- Category Filters -->
             <div class="category-filters">
                 <button class="category-btn" onclick="setCategory('')">
-                    <span>الكل</span>
+                    <span><i class="fas fa-th"></i> الكل</span>
                     <span class="category-count"><?php echo array_sum($productCounts); ?></span>
                 </button>
                 <button class="category-btn" data-category="electronics" onclick="setCategory('electronics')">
-                    <span>📱 إلكترونيات</span>
+                    <span><i class="fas fa-mobile-alt"></i> إلكترونيات</span>
                     <span class="category-count"><?php echo $productCounts['electronics'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="fashion" onclick="setCategory('fashion')">
-                    <span>👔 أزياء</span>
+                    <span><i class="fas fa-tshirt"></i> أزياء</span>
                     <span class="category-count"><?php echo $productCounts['fashion'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="home" onclick="setCategory('home')">
-                    <span>🏠 منزل ومطبخ</span>
+                    <span><i class="fas fa-home"></i> منزل ومطبخ</span>
                     <span class="category-count"><?php echo $productCounts['home'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="sports" onclick="setCategory('sports')">
-                    <span>⚽ رياضة</span>
+                    <span><i class="fas fa-futbol"></i> رياضة</span>
                     <span class="category-count"><?php echo $productCounts['sports'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="beauty" onclick="setCategory('beauty')">
-                    <span>💄 جمال وعناية</span>
+                    <span><i class="fas fa-spa"></i> جمال وعناية</span>
                     <span class="category-count"><?php echo $productCounts['beauty'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="books" onclick="setCategory('books')">
-                    <span>📚 كتب</span>
+                    <span><i class="fas fa-book"></i> كتب</span>
                     <span class="category-count"><?php echo $productCounts['books'] ?? 0; ?></span>
                 </button>
                 <button class="category-btn" data-category="toys" onclick="setCategory('toys')">
-                    <span>🧸 ألعاب</span>
+                    <span><i class="fas fa-gamepad"></i> ألعاب</span>
                     <span class="category-count"><?php echo $productCounts['toys'] ?? 0; ?></span>
                 </button>
             </div>
@@ -172,7 +175,9 @@ $productCounts = getProductCountByCategory();
                 </div>
 
                 <!-- Reset Button -->
-                <button class="reset-btn" onclick="resetFilters()">إعادة تعيين</button>
+                <button class="reset-btn" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> إعادة تعيين
+                </button>
             </div>
         </div>
     </section>
