@@ -57,6 +57,8 @@ Content-Type: application/json</pre>
   "affiliateLink": "https://www.amazon.ae/dp/...",
   "videoUrl": "https://drive.google.com/file/d/...",
   "videoOrientation": "landscape",
+  "salesVolume": 1500,
+  "starRating": 4.5,
   "additionalImages": [
     "https://example.com/image2.jpg",
     "https://example.com/image3.jpg"
@@ -78,6 +80,8 @@ Content-Type: application/json</pre>
                     <li><code>category</code> - الفئة: electronics, fashion, home, sports, beauty, books, toys, other</li>
                     <li><code>videoUrl</code> - رابط فيديو من Google Drive أو YouTube</li>
                     <li><code>videoOrientation</code> - اتجاه الفيديو: portrait أو landscape</li>
+                    <li><code>salesVolume</code> - عدد المبيعات (رقم صحيح، مثال: 1500)</li>
+                    <li><code>starRating</code> - تقييم المنتج من 0.0 إلى 5.0 (مثال: 4.5)</li>
                     <li><code>additionalImages</code> - مصفوفة من روابط الصور الإضافية</li>
                 </ul>
 
@@ -109,7 +113,9 @@ Content-Type: application/json</pre>
     "price": 149.99,
     "originalPrice": 299.99,
     "category": "electronics",
-    "affiliateLink": "https://www.amazon.ae/dp/B08XYZ"
+    "affiliateLink": "https://www.amazon.ae/dp/B08XYZ",
+    "salesVolume": 1500,
+    "starRating": 4.5
   }'</pre>
 
             <h2>⚠️ رموز الأخطاء</h2>
@@ -174,10 +180,27 @@ try {
         $discountPercentage = calculateDiscount($originalPrice, $price);
     }
 
+    // معالجة والتحقق من الحقول الجديدة
+    $salesVolume = null;
+    if (isset($input['salesVolume'])) {
+        $salesVolume = intval($input['salesVolume']);
+        if ($salesVolume < 0) {
+            sendJsonResponse(['success' => false, 'message' => 'salesVolume يجب أن يكون رقم موجب'], 400);
+        }
+    }
+
+    $starRating = null;
+    if (isset($input['starRating'])) {
+        $starRating = floatval($input['starRating']);
+        if ($starRating < 0.0 || $starRating > 5.0) {
+            sendJsonResponse(['success' => false, 'message' => 'starRating يجب أن يكون بين 0.0 و 5.0'], 400);
+        }
+    }
+
     // إدراج المنتج
     $stmt = $db->prepare("INSERT INTO products (title, description, image_url, price, original_price,
-                         discount_percentage, category, affiliate_link, video_url, video_orientation)
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                         discount_percentage, sales_volume, star_rating, category, affiliate_link, video_url, video_orientation)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->execute([
         $title,
@@ -186,6 +209,8 @@ try {
         $price,
         $originalPrice,
         $discountPercentage,
+        $salesVolume,
+        $starRating,
         $category,
         $affiliateLink,
         $videoUrl,
