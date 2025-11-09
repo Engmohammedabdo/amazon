@@ -544,11 +544,10 @@ if ('serviceWorker' in navigator) {
 }
 
 // ==================== Attach Language Switcher Listeners ====================
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const isArabic = this.textContent.trim() === 'AR';
-            switchLanguage(isArabic ? 'ar' : 'en');
-        });
+// Attach immediately (script is at end of body)
+document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const isArabic = this.textContent.trim() === 'AR';
+        switchLanguage(isArabic ? 'ar' : 'en');
     });
 });
