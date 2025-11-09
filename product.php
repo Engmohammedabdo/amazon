@@ -173,18 +173,20 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 </div>
 
                 <div class="price-section">
+                    <?php if ($product['original_price'] && $product['original_price'] > $product['price']): ?>
+                        <div class="original-price">
+                            <?php echo formatPrice($product['original_price']); ?> درهم
+                        </div>
+                    <?php endif; ?>
+
                     <div class="current-price">
                         <?php echo formatPrice($product['price']); ?> درهم
-                        <?php if ($product['original_price']): ?>
-                            <span class="original-price">
-                                <?php echo formatPrice($product['original_price']); ?> درهم
-                            </span>
-                        <?php endif; ?>
                     </div>
-                    <?php if ($product['original_price']): ?>
+
+                    <?php if ($product['original_price'] && $product['original_price'] > $product['price']): ?>
                         <div class="discount-amount">
                             <i class="fas fa-badge-percent"></i>
-                            وفر <?php echo $product['discount_percentage']; ?>%
+                            وفر <?php echo $product['discount_percentage'] ?? calculateDiscount($product['original_price'], $product['price']); ?>%
                         </div>
                         <div class="savings-highlight">
                             <i class="fas fa-piggy-bank"></i>
