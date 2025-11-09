@@ -1,0 +1,267 @@
+════════════════════════════════════════════════════════════════
+  🚀 خطوات سحب موقع PYRASTORE من GitHub عبر SSH
+════════════════════════════════════════════════════════════════
+
+📋 معلومات المشروع:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• الموقع: https://events.pyramedia.info/
+• المجلد: public_html/events
+• قاعدة البيانات: pyramed1_db
+• المستخدم: pyramed1_db
+• الرابط: https://github.com/Engmohammedabdo/amazon
+• البرانش: claude/build-amazon-affiliate-site-011CUwcbGe29Tbe2dQCRwTdS
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 1️⃣: الاتصال بـ SSH
+════════════════════════════════════════════════════════════════
+
+في cPanel، افتح Terminal أو استخدم SSH:
+
+ssh your-username@your-server.com
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 2️⃣: الانتقال للمجلد وإنشاء events
+════════════════════════════════════════════════════════════════
+
+cd ~/public_html
+mkdir -p events
+cd events
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 3️⃣: سحب المشروع من GitHub
+════════════════════════════════════════════════════════════════
+
+طريقة 1 (الأفضل - إذا كان المجلد فارغاً):
+────────────────────────────────────────────────────────────────
+
+git clone -b claude/build-amazon-affiliate-site-011CUwcbGe29Tbe2dQCRwTdS \
+https://github.com/Engmohammedabdo/amazon.git .
+
+
+طريقة 2 (إذا كان المجلد يحتوي على ملفات):
+────────────────────────────────────────────────────────────────
+
+git clone -b claude/build-amazon-affiliate-site-011CUwcbGe29Tbe2dQCRwTdS \
+https://github.com/Engmohammedabdo/amazon.git temp_clone
+
+mv temp_clone/* .
+mv temp_clone/.* . 2>/dev/null || true
+rm -rf temp_clone
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 4️⃣: إنشاء ملف config.php
+════════════════════════════════════════════════════════════════
+
+cat > includes/config.php << 'CONFIGEOF'
+<?php
+/**
+ * ملف الإعدادات - PYRASTORE
+ */
+
+// إعدادات قاعدة البيانات
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'pyramed1_db');
+define('DB_USER', 'pyramed1_db');
+define('DB_PASS', 'Engmidoz@2020');
+define('DB_CHARSET', 'utf8mb4');
+
+// إعدادات الموقع
+define('SITE_URL', 'https://events.pyramedia.info');
+define('SITE_NAME', 'PYRASTORE');
+define('SITE_TAGLINE', 'UAE PICKS');
+
+// إعدادات الأمان
+define('SESSION_LIFETIME', 7200);
+
+// المنطقة الزمنية
+date_default_timezone_set('Asia/Dubai');
+
+// عرض الأخطاء
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
+?>
+CONFIGEOF
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 5️⃣: ضبط الصلاحيات
+════════════════════════════════════════════════════════════════
+
+# صلاحيات الملفات
+find . -type f -exec chmod 644 {} \;
+
+# صلاحيات المجلدات
+find . -type d -exec chmod 755 {} \;
+
+# حماية config.php
+chmod 600 includes/config.php
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 6️⃣: إنشاء ملف .htaccess للحماية
+════════════════════════════════════════════════════════════════
+
+cat > .htaccess << 'HTACCESSEOF'
+# PYRASTORE - Security Configuration
+
+# Prevent directory listing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(sql|log|env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect includes folder
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} ^/events/includes/.*
+    RewriteRule ^(.*)$ - [F,L]
+</IfModule>
+
+# Enable Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+HTACCESSEOF
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 7️⃣: تثبيت قاعدة البيانات
+════════════════════════════════════════════════════════════════
+
+الطريقة 1 (الأسهل) - عبر المتصفح:
+────────────────────────────────────────────────────────────────
+
+1. افتح المتصفح واذهب إلى:
+   https://events.pyramedia.info/install.php
+
+2. أدخل البيانات التالية:
+   • خادم قاعدة البيانات: localhost
+   • اسم قاعدة البيانات: pyramed1_db
+   • اسم المستخدم: pyramed1_db
+   • كلمة المرور: Engmidoz@2020
+   • رابط الموقع: https://events.pyramedia.info
+
+3. اضغط "تثبيت الموقع"
+
+4. بعد التثبيت الناجح، احذف install.php:
+   rm install.php
+
+
+الطريقة 2 - عبر phpMyAdmin:
+────────────────────────────────────────────────────────────────
+
+1. افتح phpMyAdmin من cPanel
+2. اختر قاعدة البيانات: pyramed1_db
+3. اذهب إلى تبويب "Import"
+4. ارفع ملف: DATABASE_SCHEMA.sql
+5. اضغط "Go"
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 8️⃣: التحقق من التثبيت
+════════════════════════════════════════════════════════════════
+
+✅ اختبار الموقع:
+   https://events.pyramedia.info/
+
+✅ اختبار لوحة التحكم:
+   https://events.pyramedia.info/admin/login.php
+
+   بيانات الدخول الافتراضية:
+   • المستخدم: admin
+   • الكلمة: admin123
+
+   ⚠️ غيّر كلمة المرور فوراً!
+
+✅ اختبار Webhook API:
+   curl https://events.pyramedia.info/api/webhook.php?action=health
+
+
+════════════════════════════════════════════════════════════════
+  الخطوة 9️⃣: الأمان (مهم جداً!)
+════════════════════════════════════════════════════════════════
+
+1. حذف ملف التثبيت:
+   rm install.php
+
+2. تغيير كلمة المرور:
+   • سجل الدخول للوحة التحكم
+   • اذهب إلى الإعدادات
+   • غيّر كلمة المرور
+
+3. تغيير API Key:
+   • اذهب إلى: الإعدادات → Webhook API
+   • ولّد مفتاح جديد
+   • احفظه في مكان آمن
+
+
+════════════════════════════════════════════════════════════════
+  🔄 تحديث الموقع لاحقاً
+════════════════════════════════════════════════════════════════
+
+إذا تم تحديث الكود في GitHub:
+
+cd ~/public_html/events
+git pull origin claude/build-amazon-affiliate-site-011CUwcbGe29Tbe2dQCRwTdS
+
+
+════════════════════════════════════════════════════════════════
+  📚 ملفات التوثيق
+════════════════════════════════════════════════════════════════
+
+• README.md - دليل شامل للمشروع
+• DEPLOY.md - دليل مفصل للنشر
+• WEBHOOK_GUIDE.md - دليل Webhook API
+• DATABASE_SCHEMA.sql - هيكل قاعدة البيانات
+
+
+════════════════════════════════════════════════════════════════
+  🐛 حل المشاكل
+════════════════════════════════════════════════════════════════
+
+❌ خطأ "الاتصال بقاعدة البيانات":
+   cat includes/config.php  # تحقق من البيانات
+
+❌ خطأ 500:
+   tail -f ~/public_html/error_log  # تحقق من الأخطاء
+
+❌ CSS/JS لا يعمل:
+   chmod 644 assets/css/*
+   chmod 644 assets/js/*
+
+
+════════════════════════════════════════════════════════════════
+  ✨ الخطوات التالية
+════════════════════════════════════════════════════════════════
+
+✅ حذف install.php
+✅ تغيير كلمة مرور الأدمن
+✅ تغيير API Key
+✅ إضافة منتجاتك
+✅ تفعيل التتبع (Google Analytics, Meta Pixel, TikTok)
+✅ ربط n8n مع Webhook API
+✅ البدء في التسويق!
+
+
+════════════════════════════════════════════════════════════════
+  🎉 انتهى! موقعك الآن جاهز للعمل
+════════════════════════════════════════════════════════════════
