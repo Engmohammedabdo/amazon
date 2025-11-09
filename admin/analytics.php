@@ -12,17 +12,17 @@ try {
     // Filter by date
     $period = $_GET['period'] ?? 'week';
     $dateFilter = match($period) {
-        'today' => "DATE(created_at) = CURDATE()",
-        'week' => "created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)",
-        'month' => "created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
+        'today' => "DATE(a.created_at) = CURDATE()",
+        'week' => "a.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)",
+        'month' => "a.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
         default => "1=1"
     };
 
     // الإحصائيات العامة
-    $totalEvents = $db->query("SELECT COUNT(*) FROM analytics_events WHERE $dateFilter")->fetchColumn();
-    $pageViews = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'page_view' AND $dateFilter")->fetchColumn();
-    $productClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'product_click' AND $dateFilter")->fetchColumn();
-    $purchaseClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'purchase_button_click' AND $dateFilter")->fetchColumn();
+    $totalEvents = $db->query("SELECT COUNT(*) FROM analytics_events a WHERE $dateFilter")->fetchColumn();
+    $pageViews = $db->query("SELECT COUNT(*) FROM analytics_events a WHERE a.event_type = 'page_view' AND $dateFilter")->fetchColumn();
+    $productClicks = $db->query("SELECT COUNT(*) FROM analytics_events a WHERE a.event_type = 'product_click' AND $dateFilter")->fetchColumn();
+    $purchaseClicks = $db->query("SELECT COUNT(*) FROM analytics_events a WHERE a.event_type = 'purchase_button_click' AND $dateFilter")->fetchColumn();
 
     // أكثر المنتجات نقراً
     $topProducts = $db->query("
@@ -38,7 +38,8 @@ try {
     $conversionRates = [];
     foreach ($topProducts as $product) {
         // استخدام prepared statement لتجنب SQL injection
-        $stmt = $db->prepare("SELECT COUNT(*) FROM analytics_events WHERE product_id = ? AND event_type = 'product_click' AND $dateFilter");
+        $viewsQuery = "SELECT COUNT(*) FROM analytics_events a WHERE a.product_id = ? AND a.event_type = 'product_click' AND $dateFilter";
+        $stmt = $db->prepare($viewsQuery);
         $stmt->execute([$product['id']]);
         $views = $stmt->fetchColumn();
 
