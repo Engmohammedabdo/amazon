@@ -196,27 +196,6 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                         <span>اشتري الآن من أمازون</span>
                     </button>
                 </div>
-
-                <div class="share-section">
-                    <div class="share-title">
-                        <i class="fas fa-share-alt"></i>
-                        شارك المنتج:
-                    </div>
-                    <div class="share-buttons">
-                        <button class="share-btn whatsapp" onclick="shareWhatsApp()">
-                            <i class="fab fa-whatsapp"></i> واتساب
-                        </button>
-                        <button class="share-btn facebook" onclick="shareFacebook()">
-                            <i class="fab fa-facebook-f"></i> فيسبوك
-                        </button>
-                        <button class="share-btn twitter" onclick="shareTwitter()">
-                            <i class="fab fa-twitter"></i> تويتر
-                        </button>
-                        <button class="share-btn copy" onclick="copyLink()">
-                            <i class="fas fa-link"></i> نسخ الرابط
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -266,6 +245,28 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
+
+        <!-- Share Section (Moved to bottom for better conversion) -->
+        <div class="share-section">
+            <h3 class="share-title">
+                <i class="fas fa-share-alt"></i>
+                شارك هذا المنتج
+            </h3>
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> واتساب
+                </button>
+                <button class="share-btn facebook" onclick="shareFacebook()">
+                    <i class="fab fa-facebook-f"></i> فيسبوك
+                </button>
+                <button class="share-btn twitter" onclick="shareTwitter()">
+                    <i class="fab fa-twitter"></i> تويتر
+                </button>
+                <button class="share-btn copy" onclick="copyLink()">
+                    <i class="fas fa-link"></i> نسخ
+                </button>
+            </div>
+        </div>
 
         <!-- Similar Products -->
         <?php if (count($similarProducts) > 0): ?>
