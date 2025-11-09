@@ -1247,9 +1247,16 @@ button {
     }
 }
 
-/* Desktop: horizontal row */
+/* Desktop: horizontal row (single line) */
 @media (min-width: 769px) {
-    .amazon-benefits {
-        flex-direction: row;
-    }
+  .amazon-benefits {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .benefit-badge {
+    flex: 0 0 auto;
+  }
 }
