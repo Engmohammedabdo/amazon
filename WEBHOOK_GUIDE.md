@@ -59,6 +59,8 @@ This table shows how to map Amazon scraper fields to webhook fields and where th
 | `product_description` / `about_product` | `description` | string | No | `.product-description` section |
 | `product_price` / `current_price` | `price` | float | No | `.current-price` (large, primary color) |
 | `product_original_price` / `was_price` | `originalPrice` | float | No | `.original-price` (strikethrough) |
+| `product_rating` / `star_rating` | `starRating` | float | No | `.amazon-rating` (yellow badge with stars) |
+| `sales_count` / `purchases` | `salesVolume` | int | No | `.sales-badge` (red badge with 🔥) |
 | `product_category` | `category` | string | No | `.category-badge` |
 | `image_link1` / `main_image` | `imageUrl` | string | No | `#mainImage` (main gallery image) |
 | `image_link2`, `image_link3`, ... | `additionalImages[0]`, `[1]`, ... | array | No | `.thumbnail-item` (gallery thumbnails) |
@@ -74,6 +76,9 @@ Product Page Layout:
 │ [Main Image] [Thumbnail] [Thumbnail] │
 ├─────────────────────────────────────┤
 │ <h1>{title}</h1>                    │ ← product-detail-title
+│                                     │
+│ ⭐⭐⭐⭐⭐ 4.5/5 Amazon Rating        │ ← starRating (yellow badge)
+│ 🔥 1,500+ bought recently           │ ← salesVolume (red badge)
 │                                     │
 │ ⚡ Original: $299 {originalPrice}  │ ← original-price (strikethrough)
 │ 💰 Now: $149 {price}               │ ← current-price (bold, large)
@@ -111,6 +116,8 @@ Product Page Layout:
 | `imageUrl` | string | Placeholder | Main product image URL | Must be valid URL |
 | `price` | float | `0` | Current price (AED) | Positive number |
 | `originalPrice` | float | `null` | Original price before discount | Must be ≥ price |
+| `starRating` | float | `null` | Amazon product rating (0.0-5.0) | Must be between 0.0 and 5.0 |
+| `salesVolume` | int | `null` | Number of units sold/purchased | Must be positive integer |
 | `category` | string | `"other"` | Product category (see below) | Must match enum values |
 | `videoUrl` | string | `null` | YouTube or Google Drive URL | Valid URL |
 | `videoOrientation` | string | `"landscape"` | Video aspect ratio | `landscape` or `portrait` |
@@ -166,6 +173,8 @@ Product Page Layout:
   "imageUrl": "https://m.media-amazon.com/images/I/61vFO3XcneL._AC_SL1500_.jpg",
   "price": 1299.00,
   "originalPrice": 1699.00,
+  "starRating": 4.7,
+  "salesVolume": 2500,
   "category": "electronics",
   "affiliateLink": "https://www.amazon.ae/dp/B0BZ1B45TV?tag=pyrastore",
   "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -180,6 +189,8 @@ Product Page Layout:
 
 **Result:**
 - ✅ Full image gallery (4 images total)
+- ✅ Star rating badge (⭐⭐⭐⭐⭐ 4.7/5)
+- ✅ Sales volume badge (🔥 2,500+ bought recently)
 - ✅ Price with 24% discount badge
 - ✅ Complete description
 - ✅ Video player
@@ -255,6 +266,8 @@ curl -X POST https://yourdomain.com/api/webhook.php \
     "imageUrl": "https://m.media-amazon.com/images/I/61ABC123.jpg",
     "price": 149.99,
     "originalPrice": 299.99,
+    "starRating": 4.6,
+    "salesVolume": 1200,
     "category": "electronics",
     "affiliateLink": "https://www.amazon.ae/dp/B08MOUSE99?tag=pyrastore",
     "additionalImages": [
@@ -302,6 +315,8 @@ Body Parameters (JSON):
   "imageUrl": "={{ $json.image_link1 || $json.main_image }}",
   "price": "={{ $json.product_price }}",
   "originalPrice": "={{ $json.product_original_price }}",
+  "starRating": "={{ $json.product_rating || $json.star_rating }}",
+  "salesVolume": "={{ $json.sales_count || $json.purchases }}",
   "category": "electronics",
   "affiliateLink": "={{ $json.product_url }}",
   "additionalImages": "={{ [$json.image_link2, $json.image_link3].filter(img => img) }}"
@@ -318,6 +333,8 @@ If you're scraping Amazon, map these fields:
 | Product URL | `{{ $json.product_url }}` | `affiliateLink` |
 | Current price | `{{ $json.product_price }}` | `price` |
 | Original price | `{{ $json.product_original_price }}` | `originalPrice` |
+| Star rating | `{{ $json.product_rating }}` | `starRating` |
+| Sales/purchases count | `{{ $json.sales_count }}` | `salesVolume` |
 | Main image | `{{ $json.image_link1 }}` | `imageUrl` |
 | Image 2 | `{{ $json.image_link2 }}` | `additionalImages[0]` |
 | Image 3 | `{{ $json.image_link3 }}` | `additionalImages[1]` |
@@ -348,7 +365,7 @@ If you're scraping Amazon, map these fields:
           "parameters": []
         },
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  \"title\": $json.product_title,\n  \"affiliateLink\": $json.product_url,\n  \"price\": $json.product_price,\n  \"originalPrice\": $json.product_original_price,\n  \"imageUrl\": $json.image_link1,\n  \"additionalImages\": [$json.image_link2, $json.image_link3].filter(img => img),\n  \"category\": \"electronics\"\n} }}",
+        "jsonBody": "={{ {\n  \"title\": $json.product_title,\n  \"affiliateLink\": $json.product_url,\n  \"price\": $json.product_price,\n  \"originalPrice\": $json.product_original_price,\n  \"starRating\": $json.product_rating,\n  \"salesVolume\": $json.sales_count,\n  \"imageUrl\": $json.image_link1,\n  \"additionalImages\": [$json.image_link2, $json.image_link3].filter(img => img),\n  \"category\": \"electronics\"\n} }}",
         "options": {}
       },
       "name": "Add Product to PyraStore",
