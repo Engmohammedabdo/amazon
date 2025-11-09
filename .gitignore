@@ -1,0 +1,24 @@
+# PYRASTORE - Git Ignore
+
+# Config file with sensitive data
+includes/config.php
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+error_log
+debug.log
+
+# Temporary files
+*.tmp
+*.temp
