@@ -69,15 +69,31 @@ try {
             $sql .= " ORDER BY created_at DESC";
     }
 
+    // Pagination
+    $page = max(1, intval($_GET['page'] ?? 1));
+    $perPage = min(100, intval($_GET['per_page'] ?? 50)); // max 100 items per page
+    $offset = ($page - 1) * $perPage;
+
+    $sql .= " LIMIT ? OFFSET ?";
+    $params[] = $perPage;
+    $params[] = $offset;
+
     // تنفيذ الاستعلام
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
     $products = $stmt->fetchAll();
 
+    // حساب معلومات Pagination
+    $totalPages = ceil($total / $perPage);
+
     sendJsonResponse([
         'success' => true,
         'products' => $products,
-        'total' => $total
+        'total' => $total,
+        'page' => $page,
+        'per_page' => $perPage,
+        'total_pages' => $totalPages,
+        'has_more' => $page < $totalPages
     ]);
 
 } catch (Exception $e) {

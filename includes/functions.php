@@ -97,8 +97,8 @@ function requireAdminLogin() {
 /**
  * تنسيق السعر
  */
-function formatPrice($price, $currency = 'AED') {
-    return number_format($price, 2) . ' ' . $currency;
+function formatPrice($price) {
+    return number_format($price, 2);
 }
 
 /**
@@ -146,20 +146,20 @@ function getCategoryNameAr($category) {
 }
 
 /**
- * الحصول على أيقونة الفئة
+ * الحصول على أيقونة الفئة (Font Awesome class)
  */
 function getCategoryIcon($category) {
     $icons = [
-        'electronics' => '📱',
-        'fashion' => '👔',
-        'home' => '🏠',
-        'sports' => '⚽',
-        'beauty' => '💄',
-        'books' => '📚',
-        'toys' => '🧸',
-        'other' => '🛍️'
+        'electronics' => 'fa-mobile-alt',
+        'fashion' => 'fa-tshirt',
+        'home' => 'fa-home',
+        'sports' => 'fa-futbol',
+        'beauty' => 'fa-spa',
+        'books' => 'fa-book',
+        'toys' => 'fa-gamepad',
+        'other' => 'fa-shopping-bag'
     ];
-    return $icons[$category] ?? '🛍️';
+    return $icons[$category] ?? 'fa-shopping-bag';
 }
 
 /**
