@@ -303,19 +303,43 @@ function createProduct() {
 
         $newProductId = $db->lastInsertId();
 
-        // Add images if provided
+        // Add images if provided (supports both 'images' and 'additionalImages' fields)
+        $imagesToAdd = [];
+
+        // Check for primary image
+        if (isset($data['image']) && !empty($data['image'])) {
+            $imagesToAdd[] = $data['image'];
+        } elseif (isset($data['primaryImage']) && !empty($data['primaryImage'])) {
+            $imagesToAdd[] = $data['primaryImage'];
+        }
+
+        // Add images array
         if (isset($data['images']) && is_array($data['images'])) {
-            foreach ($data['images'] as $index => $imageUrl) {
-                $stmt = $db->prepare("
-                    INSERT INTO product_images (product_id, image_url, is_primary, display_order)
-                    VALUES (:product_id, :image_url, :is_primary, :display_order)
-                ");
-                $stmt->execute([
-                    ':product_id' => $newProductId,
-                    ':image_url' => $imageUrl,
-                    ':is_primary' => $index === 0 ? 1 : 0,
-                    ':display_order' => $index
-                ]);
+            $imagesToAdd = array_merge($imagesToAdd, $data['images']);
+        }
+
+        // Add additionalImages array
+        if (isset($data['additionalImages']) && is_array($data['additionalImages'])) {
+            $imagesToAdd = array_merge($imagesToAdd, $data['additionalImages']);
+        }
+
+        // Remove duplicates and save to database
+        $imagesToAdd = array_unique($imagesToAdd);
+
+        if (!empty($imagesToAdd)) {
+            foreach ($imagesToAdd as $index => $imageUrl) {
+                if (!empty($imageUrl)) {
+                    $stmt = $db->prepare("
+                        INSERT INTO product_images (product_id, image_url, is_primary, display_order)
+                        VALUES (:product_id, :image_url, :is_primary, :display_order)
+                    ");
+                    $stmt->execute([
+                        ':product_id' => $newProductId,
+                        ':image_url' => $imageUrl,
+                        ':is_primary' => $index === 0 ? 1 : 0,
+                        ':display_order' => $index
+                    ]);
+                }
             }
         }
 
@@ -387,6 +411,49 @@ function updateProduct() {
         $sql = "UPDATE products SET " . implode(', ', $updates) . " WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
+
+        // Update images if provided
+        if (isset($data['images']) || isset($data['additionalImages']) || isset($data['image']) || isset($data['primaryImage'])) {
+            // Delete existing images
+            $stmt = $db->prepare("DELETE FROM product_images WHERE product_id = :id");
+            $stmt->execute([':id' => $data['id']]);
+
+            // Add new images (supports multiple formats)
+            $imagesToAdd = [];
+
+            if (isset($data['image']) && !empty($data['image'])) {
+                $imagesToAdd[] = $data['image'];
+            } elseif (isset($data['primaryImage']) && !empty($data['primaryImage'])) {
+                $imagesToAdd[] = $data['primaryImage'];
+            }
+
+            if (isset($data['images']) && is_array($data['images'])) {
+                $imagesToAdd = array_merge($imagesToAdd, $data['images']);
+            }
+
+            if (isset($data['additionalImages']) && is_array($data['additionalImages'])) {
+                $imagesToAdd = array_merge($imagesToAdd, $data['additionalImages']);
+            }
+
+            $imagesToAdd = array_unique($imagesToAdd);
+
+            if (!empty($imagesToAdd)) {
+                foreach ($imagesToAdd as $index => $imageUrl) {
+                    if (!empty($imageUrl)) {
+                        $stmt = $db->prepare("
+                            INSERT INTO product_images (product_id, image_url, is_primary, display_order)
+                            VALUES (:product_id, :image_url, :is_primary, :display_order)
+                        ");
+                        $stmt->execute([
+                            ':product_id' => $data['id'],
+                            ':image_url' => $imageUrl,
+                            ':is_primary' => $index === 0 ? 1 : 0,
+                            ':display_order' => $index
+                        ]);
+                    }
+                }
+            }
+        }
 
         $db->commit();
 
