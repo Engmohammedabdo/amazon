@@ -209,6 +209,32 @@ function t($key) {
             'en' => 'Similar Products'
         ],
 
+        // Product Cards (JavaScript)
+        'showing_products' => [
+            'ar' => 'عرض {showing} من {total} منتج',
+            'en' => 'Showing {showing} of {total} products'
+        ],
+        'no_products_found' => [
+            'ar' => 'لا توجد منتجات تطابق البحث',
+            'en' => 'No products match your search'
+        ],
+        'reset_filters' => [
+            'ar' => 'إعادة تعيين الفلاتر',
+            'en' => 'Reset Filters'
+        ],
+        'error_loading' => [
+            'ar' => 'حدث خطأ أثناء تحميل المنتجات',
+            'en' => 'Error loading products'
+        ],
+        'retry' => [
+            'ar' => 'إعادة المحاولة',
+            'en' => 'Retry'
+        ],
+        'category_other' => [
+            'ar' => 'منتجات أخرى',
+            'en' => 'Other Products'
+        ],
+
         // Footer
         'privacy_policy' => [
             'ar' => 'سياسة الخصوصية',

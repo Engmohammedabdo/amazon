@@ -240,7 +240,7 @@ function displayProducts(products) {
                      onerror="this.src='/assets/images/placeholder.jpg'">
                 <div class="category-badge">
                     <i class="fas fa-${getCategoryIconFA(product.category)}"></i>
-                    ${getCategoryNameAr(product.category)}
+                    ${getCategoryName(product.category)}
                 </div>
                 ${product.discount_percentage ? `<div class="discount-badge">-${product.discount_percentage}%</div>` : ''}
             </div>
@@ -249,14 +249,14 @@ function displayProducts(products) {
                 <p class="product-description">${escapeHtml(truncateText(product.description, 100))}</p>
                 <div class="product-pricing">
                     <div class="product-price">
-                        ${formatPrice(product.price)} درهم
-                        ${product.original_price ? `<span class="product-original-price">${formatPrice(product.original_price)} درهم</span>` : ''}
+                        ${formatPrice(product.price)} ${window.TRANSLATIONS.currency}
+                        ${product.original_price ? `<span class="product-original-price">${formatPrice(product.original_price)} ${window.TRANSLATIONS.currency}</span>` : ''}
                     </div>
-                    ${product.original_price ? `<div class="product-savings">وفر ${formatPrice(product.original_price - product.price)} درهم</div>` : ''}
+                    ${product.original_price ? `<div class="product-savings">${window.TRANSLATIONS.save} ${formatPrice(product.original_price - product.price)} ${window.TRANSLATIONS.currency}</div>` : ''}
                 </div>
                 <button class="buy-btn" onclick="buyNow(event, ${product.id}, '${escapeHtml(product.affiliate_link)}')">
                     <i class="fas fa-shopping-cart"></i>
-                    <span>اشتري الآن</span>
+                    <span>${window.TRANSLATIONS.buy_now}</span>
                 </button>
             </div>
         </div>
@@ -275,9 +275,9 @@ function showEmptyState() {
             <div class="empty-state-icon">
                 <i class="fas fa-search fa-3x"></i>
             </div>
-            <p class="empty-state-text">لا توجد منتجات تطابق البحث</p>
+            <p class="empty-state-text">${window.TRANSLATIONS.no_products_found}</p>
             <button class="btn" onclick="resetFilters()" style="margin-top: 1rem;">
-                <i class="fas fa-redo"></i> إعادة تعيين الفلاتر
+                <i class="fas fa-redo"></i> ${window.TRANSLATIONS.reset_filters}
             </button>
         </div>
     `;
@@ -290,9 +290,9 @@ function showErrorState() {
             <div class="empty-state-icon">
                 <i class="fas fa-exclamation-triangle fa-3x"></i>
             </div>
-            <p class="empty-state-text">حدث خطأ أثناء تحميل المنتجات</p>
+            <p class="empty-state-text">${window.TRANSLATIONS.error_loading}</p>
             <button class="btn" onclick="loadProducts()" style="margin-top: 1rem;">
-                <i class="fas fa-sync-alt"></i> إعادة المحاولة
+                <i class="fas fa-sync-alt"></i> ${window.TRANSLATIONS.retry}
             </button>
         </div>
     `;
@@ -301,7 +301,9 @@ function showErrorState() {
 function updateCounter(showing, total) {
     const counter = document.getElementById('resultsCounter');
     if (counter) {
-        counter.textContent = `عرض ${showing} من ${total} منتج`;
+        counter.textContent = window.TRANSLATIONS.showing_products
+            .replace('{showing}', showing)
+            .replace('{total}', total);
         counter.style.animation = 'fadeIn 0.5s ease';
     }
 }
@@ -394,18 +396,8 @@ function formatPrice(price) {
     return parseFloat(price).toFixed(2);
 }
 
-function getCategoryNameAr(category) {
-    const names = {
-        'electronics': 'إلكترونيات',
-        'fashion': 'أزياء',
-        'home': 'منزل ومطبخ',
-        'sports': 'رياضة',
-        'beauty': 'جمال وعناية',
-        'books': 'كتب',
-        'toys': 'ألعاب',
-        'other': 'منتجات أخرى'
-    };
-    return names[category] || 'منتجات أخرى';
+function getCategoryName(category) {
+    return window.TRANSLATIONS.categories[category] || window.TRANSLATIONS.categories.other;
 }
 
 function getCategoryIconFA(category) {

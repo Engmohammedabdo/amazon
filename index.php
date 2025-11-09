@@ -179,6 +179,30 @@ $productCounts = getProductCountByCategory();
         </div>
     </footer>
 
+    <!-- Pass translations to JavaScript -->
+    <script>
+        window.TRANSLATIONS = {
+            currency: <?php echo json_encode(t('currency')); ?>,
+            save: <?php echo json_encode(t('save')); ?>,
+            buy_now: <?php echo json_encode(t('buy_now')); ?>,
+            showing_products: <?php echo json_encode(t('showing_products')); ?>,
+            no_products_found: <?php echo json_encode(t('no_products_found')); ?>,
+            reset_filters: <?php echo json_encode(t('reset_filters')); ?>,
+            error_loading: <?php echo json_encode(t('error_loading')); ?>,
+            retry: <?php echo json_encode(t('retry')); ?>,
+            categories: {
+                electronics: <?php echo json_encode(getCategoryName('electronics')); ?>,
+                fashion: <?php echo json_encode(getCategoryName('fashion')); ?>,
+                home: <?php echo json_encode(getCategoryName('home')); ?>,
+                sports: <?php echo json_encode(getCategoryName('sports')); ?>,
+                beauty: <?php echo json_encode(getCategoryName('beauty')); ?>,
+                books: <?php echo json_encode(getCategoryName('books')); ?>,
+                toys: <?php echo json_encode(getCategoryName('toys')); ?>,
+                other: <?php echo json_encode(getCategoryName('other')); ?>
+            }
+        };
+    </script>
+
     <!-- Main JavaScript -->
     <script src="/assets/js/main.js"></script>
 </body>
