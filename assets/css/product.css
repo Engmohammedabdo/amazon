@@ -932,3 +932,79 @@ a:focus-visible {
     margin: 1.75rem 0 !important;
 }
 
+/* ==================== RTL/LTR Support ==================== */
+
+/* LTR (English) specific styles */
+[dir="ltr"] .product-detail {
+    text-align: left;
+}
+
+[dir="ltr"] .zoom-badge {
+    left: 2rem;
+    right: auto;
+}
+
+[dir="ltr"] .discount-badge {
+    right: 1rem;
+    left: auto;
+}
+
+[dir="ltr"] .review-card {
+    border-left: 4px solid var(--primary);
+    border-right: none;
+}
+
+[dir="ltr"] .reviewer-name,
+[dir="ltr"] .review-date {
+    text-align: left;
+}
+
+[dir="ltr"] .share-title {
+    text-align: left;
+}
+
+[dir="ltr"] .savings-highlight {
+    text-align: left;
+}
+
+[dir="ltr"] .product-category-badge {
+    text-align: left;
+}
+
+/* RTL (Arabic) specific styles */
+[dir="rtl"] .product-detail {
+    text-align: right;
+}
+
+[dir="rtl"] .zoom-badge {
+    right: 2rem;
+    left: auto;
+}
+
+[dir="rtl"] .discount-badge {
+    left: 1rem;
+    right: auto;
+}
+
+[dir="rtl"] .review-card {
+    border-right: 4px solid var(--primary);
+    border-left: none;
+}
+
+[dir="rtl"] .reviewer-name,
+[dir="rtl"] .review-date {
+    text-align: right;
+}
+
+[dir="rtl"] .share-title {
+    text-align: right;
+}
+
+[dir="rtl"] .savings-highlight {
+    text-align: right;
+}
+
+[dir="rtl"] .product-category-badge {
+    text-align: right;
+}
+

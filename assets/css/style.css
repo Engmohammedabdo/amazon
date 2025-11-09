@@ -1089,3 +1089,83 @@ button {
     }
 }
 
+/* ==================== RTL/LTR Support ==================== */
+
+/* LTR (English) specific styles */
+[dir="ltr"] {
+    text-align: left;
+}
+
+[dir="ltr"] .search-icon {
+    left: 1.25rem;
+    right: auto;
+}
+
+[dir="ltr"] .search-input {
+    padding-left: 3.5rem;
+    padding-right: 1rem;
+}
+
+[dir="ltr"] .category-count {
+    margin-left: auto;
+}
+
+[dir="ltr"] .results-counter {
+    text-align: left;
+}
+
+[dir="ltr"] .review-rating span {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+
+/* RTL (Arabic) specific styles */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="rtl"] .search-icon {
+    right: 1.25rem;
+    left: auto;
+}
+
+[dir="rtl"] .search-input {
+    padding-right: 3.5rem;
+    padding-left: 1rem;
+}
+
+[dir="rtl"] .category-count {
+    margin-right: auto;
+}
+
+[dir="rtl"] .results-counter {
+    text-align: right;
+}
+
+[dir="rtl"] .review-rating span {
+    margin-right: 0.5rem;
+    margin-left: 0;
+}
+
+/* Language switcher buttons */
+.lang-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-base);
+    background: white;
+    color: var(--primary);
+}
+
+.lang-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.lang-btn:hover:not(.active) {
+    background: var(--primary-light);
+    color: white;
+}
+
