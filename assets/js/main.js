@@ -254,6 +254,24 @@ function displayProducts(products) {
                     </div>
                     ${product.original_price ? `<div class="product-savings">${window.TRANSLATIONS.save} ${formatPrice(product.original_price - product.price)} ${window.TRANSLATIONS.currency}</div>` : ''}
                 </div>
+                <div class="amazon-benefits">
+                    <span class="benefit-badge benefit-original">
+                        <i class="fas fa-check-circle"></i>
+                        ${window.TRANSLATIONS.amazon_original}
+                    </span>
+                    <span class="benefit-badge benefit-protection">
+                        <i class="fas fa-shield-alt"></i>
+                        ${window.TRANSLATIONS.amazon_protection}
+                    </span>
+                    <span class="benefit-badge benefit-support">
+                        <i class="fas fa-headset"></i>
+                        ${window.TRANSLATIONS.amazon_support}
+                    </span>
+                    <span class="benefit-badge benefit-returns">
+                        <i class="fas fa-undo"></i>
+                        ${window.TRANSLATIONS.amazon_returns}
+                    </span>
+                </div>
                 <button class="buy-btn" onclick="buyNow(event, ${product.id}, '${escapeHtml(product.affiliate_link)}')">
                     <i class="fas fa-shopping-cart"></i>
                     <span>${window.TRANSLATIONS.buy_now}</span>

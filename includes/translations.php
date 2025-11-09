@@ -209,6 +209,24 @@ function t($key) {
             'en' => 'Similar Products'
         ],
 
+        // Amazon Benefits Badges
+        'amazon_original' => [
+            'ar' => 'منتج أصلي من أمازون',
+            'en' => 'Amazon Original'
+        ],
+        'amazon_protection' => [
+            'ar' => 'محمي بضمان أمازون',
+            'en' => 'Amazon Protection'
+        ],
+        'amazon_support' => [
+            'ar' => 'خدمة عملاء 24/7',
+            'en' => '24/7 Support'
+        ],
+        'amazon_returns' => [
+            'ar' => 'سياسة إرجاع أمازون',
+            'en' => 'Amazon Returns'
+        ],
+
         // Product Cards (JavaScript)
         'showing_products' => [
             'ar' => 'عرض {showing} من {total} منتج',

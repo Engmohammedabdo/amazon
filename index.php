@@ -190,6 +190,10 @@ $productCounts = getProductCountByCategory();
             reset_filters: <?php echo json_encode(t('reset_filters')); ?>,
             error_loading: <?php echo json_encode(t('error_loading')); ?>,
             retry: <?php echo json_encode(t('retry')); ?>,
+            amazon_original: <?php echo json_encode(t('amazon_original')); ?>,
+            amazon_protection: <?php echo json_encode(t('amazon_protection')); ?>,
+            amazon_support: <?php echo json_encode(t('amazon_support')); ?>,
+            amazon_returns: <?php echo json_encode(t('amazon_returns')); ?>,
             categories: {
                 electronics: <?php echo json_encode(getCategoryName('electronics')); ?>,
                 fashion: <?php echo json_encode(getCategoryName('fashion')); ?>,
