@@ -616,31 +616,19 @@ if (document.getElementById('stickyCTAProduct') && window.innerWidth < 768) {
   
   window.addEventListener('scroll', function() {
     if (!mainButton) {
-      // Fallback: simple show/hide
-      if (window.scrollY > 150) {
-        stickyBar.classList.add('show');
-      } else {
-        stickyBar.classList.remove('show');
-      }
+      // Always show if button not found
+      stickyBar.classList.add('show');
       return;
     }
-    
-    // Get main button position
+
     const buttonRect = mainButton.getBoundingClientRect();
     const buttonInView = buttonRect.top < window.innerHeight && buttonRect.bottom > 0;
-    
-    const scrollY = window.scrollY;
-    
-    // State 1: Top of page - Show sticky
-    if (scrollY < 150) {
-      stickyBar.classList.add('show');
-    }
-    // State 2: Main button in viewport - Hide sticky
-    else if (buttonInView) {
+
+    // Hide ONLY when main button is visible
+    if (buttonInView) {
       stickyBar.classList.remove('show');
-    }
-    // State 3: Past main button - Show sticky again
-    else if (scrollY > 150) {
+    } else {
+      // Show everywhere else (top, bottom, anywhere except near button)
       stickyBar.classList.add('show');
     }
   }, { passive: true });
