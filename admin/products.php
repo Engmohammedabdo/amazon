@@ -21,11 +21,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imageUrl = trim($_POST['image_url'] ?? '');
         $price = floatval($_POST['price'] ?? 0);
         $originalPrice = !empty($_POST['original_price']) ? floatval($_POST['original_price']) : null;
-        $category = $_POST['category'] ?? 'other';
+
+        // Validation للـ Category
+        $allowedCategories = ['electronics', 'fashion', 'home', 'sports', 'beauty', 'books', 'toys', 'other'];
+        $category = in_array($_POST['category'] ?? '', $allowedCategories) ? $_POST['category'] : 'other';
+
         $affiliateLink = trim($_POST['affiliate_link'] ?? '');
         $videoUrl = trim($_POST['video_url'] ?? '');
         $videoOrientation = $_POST['video_orientation'] ?? 'landscape';
         $isActive = isset($_POST['is_active']) ? 1 : 0;
+
+        // معالجة الصور الإضافية
+        $additionalImages = trim($_POST['additional_images'] ?? '');
+        $additionalImagesArray = [];
+        if (!empty($additionalImages)) {
+            // فصل الروابط (كل رابط في سطر جديد)
+            $lines = explode("\n", $additionalImages);
+            foreach ($lines as $line) {
+                $url = trim($line);
+                if (!empty($url) && filter_var($url, FILTER_VALIDATE_URL)) {
+                    $additionalImagesArray[] = $url;
+                }
+            }
+        }
 
         $discountPercentage = $originalPrice ? calculateDiscount($originalPrice, $price) : null;
 
@@ -34,10 +52,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $db->prepare("INSERT INTO products (title, description, image_url, price, original_price, discount_percentage, category, affiliate_link, video_url, video_orientation, is_active)
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$title, $description, $imageUrl, $price, $originalPrice, $discountPercentage, $category, $affiliateLink, $videoUrl, $videoOrientation, $isActive]);
+                $productId = $db->lastInsertId();
+
+                // إضافة الصور الإضافية
+                if (!empty($additionalImagesArray)) {
+                    $imgStmt = $db->prepare("INSERT INTO product_images (product_id, image_url, display_order) VALUES (?, ?, ?)");
+                    foreach ($additionalImagesArray as $order => $imgUrl) {
+                        $imgStmt->execute([$productId, $imgUrl, $order]);
+                    }
+                }
+
                 $message = 'تم إضافة المنتج بنجاح';
             } else {
                 $stmt = $db->prepare("UPDATE products SET title = ?, description = ?, image_url = ?, price = ?, original_price = ?, discount_percentage = ?, category = ?, affiliate_link = ?, video_url = ?, video_orientation = ?, is_active = ? WHERE id = ?");
                 $stmt->execute([$title, $description, $imageUrl, $price, $originalPrice, $discountPercentage, $category, $affiliateLink, $videoUrl, $videoOrientation, $isActive, $id]);
+
+                // حذف الصور الإضافية القديمة وإضافة الجديدة
+                $db->prepare("DELETE FROM product_images WHERE product_id = ?")->execute([$id]);
+                if (!empty($additionalImagesArray)) {
+                    $imgStmt = $db->prepare("INSERT INTO product_images (product_id, image_url, display_order) VALUES (?, ?, ?)");
+                    foreach ($additionalImagesArray as $order => $imgUrl) {
+                        $imgStmt->execute([$id, $imgUrl, $order]);
+                    }
+                }
+
                 $message = 'تم تحديث المنتج بنجاح';
             }
         } catch (Exception $e) {
@@ -90,11 +128,19 @@ $products = $stmt->fetchAll();
 
 // جلب منتج للتعديل
 $editProduct = null;
+$editProductImages = [];
 if (isset($_GET['edit'])) {
     $editId = intval($_GET['edit']);
     $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
     $stmt->execute([$editId]);
     $editProduct = $stmt->fetch();
+
+    // جلب الصور الإضافية
+    if ($editProduct) {
+        $imgStmt = $db->prepare("SELECT image_url FROM product_images WHERE product_id = ? ORDER BY display_order");
+        $imgStmt->execute([$editId]);
+        $editProductImages = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 }
 ?>
 
@@ -180,6 +226,14 @@ if (isset($_GET['edit'])) {
         <div class="form-group">
             <label>الوصف *</label>
             <textarea name="description" class="form-control" required rows="4"><?php echo clean($editProduct['description'] ?? ''); ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>صور إضافية (اختياري)</label>
+            <small style="display: block; color: #6B7280; margin-bottom: 0.5rem;">
+                📸 أدخل رابط كل صورة في سطر جديد. هذه الصور ستظهر في معرض الصور بصفحة المنتج.
+            </small>
+            <textarea name="additional_images" class="form-control" rows="5" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg&#10;https://example.com/image3.jpg"><?php echo !empty($editProductImages) ? implode("\n", $editProductImages) : ''; ?></textarea>
         </div>
 
         <div class="form-group">

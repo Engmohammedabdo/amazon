@@ -190,7 +190,14 @@ function logAnalyticsEvent($eventType, $productId = null) {
         // الحصول على Session ID من Cookie أو إنشاء واحد جديد
         $sessionId = $_COOKIE['pyra_session'] ?? generateSessionId();
         if (!isset($_COOKIE['pyra_session'])) {
-            setcookie('pyra_session', $sessionId, time() + (86400 * 30), '/'); // 30 يوم
+            // تأمين Cookie مع httpOnly و secure و samesite
+            setcookie('pyra_session', $sessionId, [
+                'expires' => time() + (86400 * 30), // 30 يوم
+                'path' => '/',
+                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off', // HTTPS only
+                'httponly' => true,    // لا يمكن الوصول عبر JavaScript (حماية من XSS)
+                'samesite' => 'Lax'    // حماية من CSRF
+            ]);
         }
 
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
@@ -278,13 +285,29 @@ function sendJsonResponse($data, $statusCode = 200) {
  * الحصول على عنوان IP الحقيقي للزائر
  */
 function getRealIpAddress() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        return $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return $_SERVER['REMOTE_ADDR'];
+    // استخدام REMOTE_ADDR (الأكثر أماناً) كقيمة افتراضية
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+    // إذا كان الموقع خلف CloudFlare proxy موثوق
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $cloudflareIP = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        if (filter_var($cloudflareIP, FILTER_VALIDATE_IP)) {
+            $ip = $cloudflareIP;
+        }
     }
+    // إذا كان خلف proxy موثوق آخر وتريد استخدام X-Forwarded-For
+    // تأكد من أن proxy موثوق قبل استخدامه
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && defined('TRUSTED_PROXY') && TRUSTED_PROXY) {
+        // أخذ أول IP من القائمة (IP الحقيقي للمستخدم)
+        $forwardedIPs = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $firstIP = trim($forwardedIPs[0]);
+        if (filter_var($firstIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            $ip = $firstIP;
+        }
+    }
+
+    // التحقق من صحة الـ IP النهائي
+    return filter_var($ip, FILTER_VALIDATE_IP) ?: '0.0.0.0';
 }
 
 /**

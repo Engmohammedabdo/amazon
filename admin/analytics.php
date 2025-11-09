@@ -6,40 +6,56 @@
 $pageTitle = 'الإحصائيات والتحليلات';
 include '_header.php';
 
-$db = getDB();
+try {
+    $db = getDB();
 
-// Filter by date
-$period = $_GET['period'] ?? 'week';
-$dateFilter = match($period) {
-    'today' => "DATE(created_at) = CURDATE()",
-    'week' => "created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)",
-    'month' => "created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
-    default => "1=1"
-};
+    // Filter by date
+    $period = $_GET['period'] ?? 'week';
+    $dateFilter = match($period) {
+        'today' => "DATE(created_at) = CURDATE()",
+        'week' => "created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)",
+        'month' => "created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
+        default => "1=1"
+    };
 
-// الإحصائيات العامة
-$totalEvents = $db->query("SELECT COUNT(*) FROM analytics_events WHERE $dateFilter")->fetchColumn();
-$pageViews = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'page_view' AND $dateFilter")->fetchColumn();
-$productClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'product_click' AND $dateFilter")->fetchColumn();
-$purchaseClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'purchase_button_click' AND $dateFilter")->fetchColumn();
+    // الإحصائيات العامة
+    $totalEvents = $db->query("SELECT COUNT(*) FROM analytics_events WHERE $dateFilter")->fetchColumn();
+    $pageViews = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'page_view' AND $dateFilter")->fetchColumn();
+    $productClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'product_click' AND $dateFilter")->fetchColumn();
+    $purchaseClicks = $db->query("SELECT COUNT(*) FROM analytics_events WHERE event_type = 'purchase_button_click' AND $dateFilter")->fetchColumn();
 
-// أكثر المنتجات نقراً
-$topProducts = $db->query("
-    SELECT p.*, COUNT(a.id) as clicks
-    FROM products p
-    LEFT JOIN analytics_events a ON p.id = a.product_id AND a.event_type = 'purchase_button_click' AND $dateFilter
-    GROUP BY p.id
-    ORDER BY clicks DESC
-    LIMIT 10
-")->fetchAll();
+    // أكثر المنتجات نقراً
+    $topProducts = $db->query("
+        SELECT p.*, COUNT(a.id) as clicks
+        FROM products p
+        LEFT JOIN analytics_events a ON p.id = a.product_id AND a.event_type = 'purchase_button_click' AND $dateFilter
+        GROUP BY p.id
+        ORDER BY clicks DESC
+        LIMIT 10
+    ")->fetchAll();
 
-// معدل التحويل لكل منتج
-$conversionRates = [];
-foreach ($topProducts as $product) {
-    $views = $db->query("SELECT COUNT(*) FROM analytics_events WHERE product_id = {$product['id']} AND event_type = 'product_click' AND $dateFilter")->fetchColumn();
-    $clicks = $product['clicks'];
-    $rate = $views > 0 ? round(($clicks / $views) * 100, 2) : 0;
-    $conversionRates[$product['id']] = ['views' => $views, 'clicks' => $clicks, 'rate' => $rate];
+    // معدل التحويل لكل منتج
+    $conversionRates = [];
+    foreach ($topProducts as $product) {
+        // استخدام prepared statement لتجنب SQL injection
+        $stmt = $db->prepare("SELECT COUNT(*) FROM analytics_events WHERE product_id = ? AND event_type = 'product_click' AND $dateFilter");
+        $stmt->execute([$product['id']]);
+        $views = $stmt->fetchColumn();
+
+        $clicks = $product['clicks'];
+        $rate = $views > 0 ? round(($clicks / $views) * 100, 2) : 0;
+        $conversionRates[$product['id']] = ['views' => $views, 'clicks' => $clicks, 'rate' => $rate];
+    }
+
+} catch (Exception $e) {
+    error_log("Analytics Page Error: " . $e->getMessage());
+    echo '<div class="alert alert-danger">حدث خطأ أثناء تحميل الإحصائيات: ' . htmlspecialchars($e->getMessage()) . '</div>';
+
+    // تعيين قيم افتراضية
+    $totalEvents = $pageViews = $productClicks = $purchaseClicks = 0;
+    $topProducts = [];
+    $conversionRates = [];
+    $period = 'week';
 }
 ?>
 

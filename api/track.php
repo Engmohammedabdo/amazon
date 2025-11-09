@@ -5,8 +5,18 @@
  */
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+// CORS Policy - السماح فقط للـ domains المحددة
+$allowedOrigins = ['https://events.pyramedia.info', 'http://localhost', 'http://127.0.0.1'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header('Access-Control-Allow-Credentials: true');
+}
+
 header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
