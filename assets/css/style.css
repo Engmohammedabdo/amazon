@@ -933,3 +933,159 @@ button {
         display: none;
     }
 }
+
+/* ==================== iPhone & Small Mobile Optimization (430px - 480px) ==================== */
+@media (max-width: 480px) {
+    /* CRITICAL: Optimize product cards for iPhone - must fit without scrolling */
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+    }
+
+    .product-card {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 12px;
+    }
+
+    /* Reduce image height significantly - from square (100%) to 60% */
+    .product-image-wrapper {
+        padding-top: 60% !important; /* Was 100% - too tall */
+    }
+
+    /* Compact badges */
+    .category-badge {
+        top: 8px;
+        right: 8px;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .discount-badge {
+        top: 8px;
+        left: 8px;
+        padding: 0.4rem 0.7rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    /* Reduce content padding dramatically */
+    .product-content {
+        padding: 1rem !important; /* Was 1.75rem - too much */
+    }
+
+    /* Smaller title - max 2 lines */
+    .product-title {
+        font-size: 0.95rem !important; /* Was 1.2rem - too big */
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        -webkit-line-clamp: 2;
+    }
+
+    /* Hide description on small mobile - save vertical space */
+    .product-description {
+        display: none !important;
+    }
+
+    /* Compact pricing section */
+    .product-pricing {
+        margin-bottom: 0.75rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid var(--border);
+    }
+
+    /* Smaller price */
+    .product-price {
+        font-size: 1.4rem !important; /* Was 2rem - too big */
+        font-weight: 800;
+        margin-bottom: 0.3rem;
+        gap: 0.4rem;
+    }
+
+    .product-original-price {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .product-savings {
+        font-size: 0.8rem;
+        gap: 0.3rem;
+    }
+
+    /* Compact buy button */
+    .buy-btn {
+        padding: 0.85rem !important; /* Was 1.25rem - too tall */
+        font-size: 0.95rem !important; /* Was 1.1rem */
+        font-weight: 700;
+        border-radius: 8px;
+    }
+
+    .buy-btn i {
+        font-size: 1rem;
+    }
+
+    /* Reduce hover effects on mobile */
+    .product-card:hover {
+        transform: none;
+    }
+
+    .product-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s;
+    }
+
+    /* Optimize container padding */
+    .container {
+        padding: 0 0.65rem;
+    }
+
+    /* Make results counter smaller */
+    .results-counter {
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+        padding: 0.3rem 0;
+    }
+
+    /* Reduce overall spacing */
+    .products-section {
+        margin: 1rem 0;
+    }
+}
+
+/* ==================== Extra Small Mobile (iPhone SE, etc - max 375px) ==================== */
+@media (max-width: 375px) {
+    /* Even more aggressive optimization for very small screens */
+    
+    .product-image-wrapper {
+        padding-top: 55% !important;
+    }
+
+    .product-content {
+        padding: 0.85rem !important;
+    }
+
+    .product-title {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.4rem;
+    }
+
+    .product-price {
+        font-size: 1.25rem !important;
+    }
+
+    .buy-btn {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .category-badge,
+    .discount-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
