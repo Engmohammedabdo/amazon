@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/translations.php';
 
 $productId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -56,7 +57,7 @@ try {
 $pageTitle = clean($product['title']) . ' - PYRASTORE';
 ?>
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="<?php echo getCurrentLanguage(); ?>" dir="<?php echo getLanguageDirection(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -135,10 +136,15 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 <body>
     <header class="site-header">
         <div class="container">
-            <div class="site-logo">
-                <h1><a href="/" style="color: var(--primary-color);">PYRASTORE</a></h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <div class="site-logo">
+                        <h1><a href="/" style="color: var(--primary-color);">PYRASTORE</a></h1>
+                    </div>
+                    <p class="site-tagline"><?php echo t('site_tagline'); ?></p>
+                </div>
+                <?php include __DIR__ . '/includes/language_switcher.php'; ?>
             </div>
-            <p class="site-tagline">UAE PICKS</p>
         </div>
     </header>
 
@@ -150,7 +156,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                     <img id="mainImage" src="<?php echo clean($product['image_url']); ?>" alt="<?php echo clean($product['title']); ?>" class="main-image">
                     <div class="zoom-badge">
                         <i class="fas fa-search-plus"></i>
-                        انقر للتكبير
+                        <?php echo t('click_to_zoom'); ?>
                     </div>
                     <?php if ($product['discount_percentage']): ?>
                         <div class="discount-badge">-<?php echo $product['discount_percentage']; ?>%</div>
@@ -160,11 +166,11 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 <?php if (count($additionalImages) > 0): ?>
                 <div class="thumbnail-list">
                     <div class="thumbnail-item active">
-                        <img src="<?php echo clean($product['image_url']); ?>" alt="صورة 1">
+                        <img src="<?php echo clean($product['image_url']); ?>" alt="<?php echo t('image_alt'); ?> 1">
                     </div>
                     <?php foreach ($additionalImages as $img): ?>
                     <div class="thumbnail-item">
-                        <img src="<?php echo clean($img['image_url']); ?>" alt="صورة">
+                        <img src="<?php echo clean($img['image_url']); ?>" alt="<?php echo t('image_alt'); ?>">
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -176,7 +182,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 <div class="product-header">
                     <div class="product-category-badge">
                         <i class="fas fa-tag"></i>
-                        <?php echo getCategoryNameAr($product['category']); ?>
+                        <?php echo getCategoryName($product['category']); ?>
                     </div>
 
                     <h1 class="product-detail-title"><?php echo clean($product['title']); ?></h1>
@@ -207,7 +213,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                                         <?php echo number_format($product['star_rating'], 1); ?>/5
                                     </span>
                                     <span style="color: #856404; font-size: 0.9rem;">
-                                        تقييم أمازون
+                                        <?php echo t('amazon_rating'); ?>
                                     </span>
                                 </div>
                             <?php endif; ?>
@@ -219,7 +225,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                                         <?php echo number_format($product['sales_volume']); ?>+
                                     </span>
                                     <span style="color: #C92A2A; font-size: 0.9rem;">
-                                        تم شراؤه مؤخراً
+                                        <?php echo t('bought_recently'); ?>
                                     </span>
                                 </div>
                             <?php endif; ?>
@@ -231,7 +237,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                             <?php for ($i = 0; $i < 5; $i++): ?>
                                 <i class="fas fa-star<?php echo $i < round($avgRating) ? '' : '-o'; ?>"></i>
                             <?php endfor; ?>
-                            <span style="color: #666; font-size: 0.9rem; margin-right: 0.5rem;">(<?php echo count($reviews); ?> مراجعة)</span>
+                            <span style="color: #666; font-size: 0.9rem; margin-right: 0.5rem;">(<?php echo count($reviews); ?> <?php echo t('review_count'); ?>)</span>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -239,22 +245,22 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 <div class="price-section">
                     <?php if ($product['original_price'] && $product['original_price'] > $product['price']): ?>
                         <div class="original-price">
-                            <?php echo formatPrice($product['original_price']); ?> درهم
+                            <?php echo formatPrice($product['original_price']); ?> <?php echo t('currency'); ?>
                         </div>
                     <?php endif; ?>
 
                     <div class="current-price">
-                        <?php echo formatPrice($product['price']); ?> درهم
+                        <?php echo formatPrice($product['price']); ?> <?php echo t('currency'); ?>
                     </div>
 
                     <?php if ($product['original_price'] && $product['original_price'] > $product['price']): ?>
                         <div class="discount-amount">
                             <i class="fas fa-badge-percent"></i>
-                            وفر <?php echo $product['discount_percentage'] ?? calculateDiscount($product['original_price'], $product['price']); ?>%
+                            <?php echo t('save'); ?> <?php echo $product['discount_percentage'] ?? calculateDiscount($product['original_price'], $product['price']); ?>%
                         </div>
                         <div class="savings-highlight">
                             <i class="fas fa-piggy-bank"></i>
-                            توفير <?php echo formatPrice($product['original_price'] - $product['price']); ?> درهم
+                            <?php echo t('savings'); ?> <?php echo formatPrice($product['original_price'] - $product['price']); ?> <?php echo t('currency'); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -262,7 +268,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 <div class="cta-section">
                     <button class="buy-now-btn" onclick="buyProduct()">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>اشتري الآن من أمازون</span>
+                        <span><?php echo t('buy_now_amazon'); ?></span>
                     </button>
                 </div>
             </div>
@@ -270,7 +276,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 
         <!-- Description Section -->
         <div class="description-section">
-            <h2 class="section-title">وصف المنتج</h2>
+            <h2 class="section-title"><?php echo t('product_description'); ?></h2>
             <div class="product-description"><?php echo clean($product['description']); ?></div>
         </div>
 
@@ -278,7 +284,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         <?php if ($product['video_url']): ?>
         <div class="description-section">
             <h2 class="section-title">
-                <i class="fas fa-video"></i> فيديو المنتج
+                <i class="fas fa-video"></i> <?php echo t('product_video'); ?>
             </h2>
             <div class="video-container <?php echo $product['video_orientation'] === 'portrait' ? 'portrait' : ''; ?>">
                 <iframe src="<?php echo convertDriveLink($product['video_url']); ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -290,7 +296,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         <?php if (count($reviews) > 0): ?>
         <div class="reviews-section">
             <h2 class="section-title">
-                <i class="fas fa-star"></i> المراجعات (<?php echo count($reviews); ?>)
+                <i class="fas fa-star"></i> <?php echo t('reviews'); ?> (<?php echo count($reviews); ?>)
             </h2>
             <?php foreach ($reviews as $review): ?>
             <div class="review-card">
@@ -319,20 +325,20 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         <div class="share-section">
             <h3 class="share-title">
                 <i class="fas fa-share-alt"></i>
-                شارك هذا المنتج
+                <?php echo t('share_product'); ?>
             </h3>
             <div class="share-buttons">
                 <button class="share-btn whatsapp" onclick="shareWhatsApp()">
-                    <i class="fab fa-whatsapp"></i> واتساب
+                    <i class="fab fa-whatsapp"></i> <?php echo t('whatsapp'); ?>
                 </button>
                 <button class="share-btn facebook" onclick="shareFacebook()">
-                    <i class="fab fa-facebook-f"></i> فيسبوك
+                    <i class="fab fa-facebook-f"></i> <?php echo t('facebook'); ?>
                 </button>
                 <button class="share-btn twitter" onclick="shareTwitter()">
-                    <i class="fab fa-twitter"></i> تويتر
+                    <i class="fab fa-twitter"></i> <?php echo t('twitter'); ?>
                 </button>
                 <button class="share-btn copy" onclick="copyLink()">
-                    <i class="fas fa-link"></i> نسخ
+                    <i class="fas fa-link"></i> <?php echo t('copy'); ?>
                 </button>
             </div>
         </div>
@@ -341,7 +347,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         <?php if (count($similarProducts) > 0): ?>
         <div class="similar-products-section">
             <h2 class="section-title">
-                <i class="fas fa-th-large"></i> منتجات مشابهة
+                <i class="fas fa-th-large"></i> <?php echo t('similar_products'); ?>
             </h2>
             <div class="similar-products-grid">
                 <?php foreach ($similarProducts as $p): ?>
@@ -350,7 +356,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                         <img src="<?php echo clean($p['image_url']); ?>" alt="<?php echo clean($p['title']); ?>" class="product-image" loading="lazy">
                         <div class="category-badge">
                             <i class="fas fa-tag"></i>
-                            <?php echo getCategoryNameAr($p['category']); ?>
+                            <?php echo getCategoryName($p['category']); ?>
                         </div>
                         <?php if ($p['discount_percentage']): ?>
                             <div class="discount-badge">-<?php echo $p['discount_percentage']; ?>%</div>
@@ -360,12 +366,12 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                         <h3 class="product-title"><?php echo clean(truncateText($p['title'], 50)); ?></h3>
                         <div class="product-pricing">
                             <div class="product-price">
-                                <?php echo formatPrice($p['price']); ?> درهم
+                                <?php echo formatPrice($p['price']); ?> <?php echo t('currency'); ?>
                             </div>
                         </div>
                         <button class="buy-btn" onclick="event.stopPropagation(); window.open('<?php echo clean($p['affiliate_link']); ?>', '_blank');">
                             <i class="fas fa-shopping-cart"></i>
-                            <span>اشتري الآن</span>
+                            <span><?php echo t('buy_now'); ?></span>
                         </button>
                     </div>
                 </div>
@@ -377,7 +383,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 
     <footer class="site-footer">
         <div class="container">
-            <p class="copyright">&copy; <?php echo date('Y'); ?> PYRASTORE - جميع الحقوق محفوظة</p>
+            <p class="copyright">&copy; <?php echo date('Y'); ?> PYRASTORE - <?php echo t('all_rights_reserved'); ?></p>
         </div>
     </footer>
 
