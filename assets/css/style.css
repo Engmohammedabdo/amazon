@@ -1260,3 +1260,76 @@ button {
     flex: 0 0 auto;
   }
 }
+
+/* ==================== Sticky CTA Bar (Mobile Only) ==================== */
+.sticky-cta-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 2px solid #E5E7EB;
+  padding: 12px 16px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  display: none; /* Hidden by default */
+  padding-bottom: env(safe-area-inset-bottom, 12px);
+}
+
+.sticky-cta-bar.show {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sticky-cta-price {
+  flex: 0 0 30%;
+}
+
+.sticky-cta-price .price {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FF6B35;
+}
+
+.sticky-cta-price .original {
+  font-size: 14px;
+  color: #6B7280;
+  text-decoration: line-through;
+}
+
+.sticky-cta-btn {
+  flex: 1;
+  height: 56px;
+  background: #FF6B35;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sticky-cta-btn:active {
+  transform: scale(0.98);
+  background: #E55A2B;
+}
+
+/* Body padding (mobile only) */
+@media (max-width: 767px) {
+  body.has-sticky-cta {
+    padding-bottom: 80px;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+  .sticky-cta-bar {
+    display: none !important;
+  }
+}

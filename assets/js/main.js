@@ -282,6 +282,11 @@ function displayProducts(products) {
 
     container.innerHTML = html;
 
+    // Update sticky CTA bar with first product
+    if (products.length > 0 && window.innerWidth < 768) {
+        updateStickyCTA(products[0]);
+    }
+
     // تفعيل Intersection Observer للكروت
     observeProductCards();
 }
@@ -561,3 +566,45 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
         switchLanguage(isArabic ? 'ar' : 'en');
     });
 });
+
+// ==================== Update Sticky CTA Bar ====================
+function updateStickyCTA(product) {
+  const priceEl = document.getElementById('stickyPrice');
+  const originalPriceEl = document.getElementById('stickyOriginalPrice');
+  const buyBtn = document.getElementById('stickyBuyBtn');
+
+  if (priceEl && product) {
+    priceEl.textContent = `${formatPrice(product.price)} ${window.TRANSLATIONS.currency}`;
+
+    if (product.original_price && originalPriceEl) {
+      originalPriceEl.textContent = `${formatPrice(product.original_price)} ${window.TRANSLATIONS.currency}`;
+      originalPriceEl.style.display = 'block';
+    } else if (originalPriceEl) {
+      originalPriceEl.style.display = 'none';
+    }
+
+    if (buyBtn) {
+      buyBtn.onclick = function(e) {
+        e.preventDefault();
+        buyNow(e, product.id, product.affiliate_link);
+      };
+    }
+  }
+}
+
+// ==================== Sticky CTA Bar - Show on scroll (mobile only) ====================
+if (window.innerWidth < 768) {
+  window.addEventListener('scroll', function() {
+    const stickyBar = document.querySelector('.sticky-cta-bar');
+    if (stickyBar) {
+      if (window.scrollY > 200) {
+        stickyBar.classList.add('show');
+      } else {
+        stickyBar.classList.remove('show');
+      }
+    }
+  }, { passive: true });
+
+  // Add class to body for padding
+  document.body.classList.add('has-sticky-cta');
+}

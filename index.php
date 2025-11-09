@@ -209,5 +209,17 @@ $productCounts = getProductCountByCategory();
 
     <!-- Main JavaScript -->
     <script src="/assets/js/main.js"></script>
+
+    <!-- Sticky CTA Bar (Mobile Only) -->
+    <div class="sticky-cta-bar" id="stickyCTA">
+        <div class="sticky-cta-price">
+            <div class="price" id="stickyPrice">--</div>
+            <div class="original" id="stickyOriginalPrice"></div>
+        </div>
+        <button class="sticky-cta-btn" id="stickyBuyBtn">
+            <i class="fas fa-shopping-cart"></i>
+            <span><?php echo t('buy_now'); ?></span>
+        </button>
+    </div>
 </body>
 </html>
