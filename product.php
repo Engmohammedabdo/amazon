@@ -75,9 +75,22 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/product.css">
 
+    <?php
+    // Load tracking pixels (TikTok, Meta, Google Analytics)
+    include_once __DIR__ . '/includes/tracking.php';
+    ?>
+
     <script>
         // Track purchase button click and open affiliate link
         function buyProduct() {
+            // Track checkout intent across all platforms
+            trackCheckoutIntent(
+                '<?php echo $productId; ?>',
+                '<?php echo addslashes($product['title']); ?>',
+                <?php echo $product['price']; ?>
+            );
+
+            // Internal tracking
             fetch('/api/track.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -87,8 +100,19 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                     session_id: localStorage.getItem('pyra_session') || 'guest'
                 })
             });
+
+            // Open affiliate link
             window.open('<?php echo clean($product['affiliate_link']); ?>', '_blank');
         }
+
+        // Fire ViewContent event on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            trackProductView(
+                '<?php echo $productId; ?>',
+                '<?php echo addslashes($product['title']); ?>',
+                <?php echo $product['price']; ?>
+            );
+        });
 
         // Share functions
         function shareWhatsApp() {
