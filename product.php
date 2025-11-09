@@ -76,6 +76,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     <link rel="stylesheet" href="/assets/css/product.css">
 
     <script>
+        // Track purchase button click and open affiliate link
         function buyProduct() {
             fetch('/api/track.php', {
                 method: 'POST',
@@ -89,12 +90,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
             window.open('<?php echo clean($product['affiliate_link']); ?>', '_blank');
         }
 
-        function changeImage(src) {
-            document.getElementById('mainImage').src = src;
-            document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
-            event.target.closest('.thumbnail-item').classList.add('active');
-        }
-
+        // Share functions
         function shareWhatsApp() {
             window.open('https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + window.location.href));
         }
@@ -109,7 +105,6 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 
         function copyLink() {
             navigator.clipboard.writeText(window.location.href);
-            alert('تم نسخ الرابط!');
         }
     </script>
 </head>
@@ -141,11 +136,11 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
                 <?php if (count($additionalImages) > 0): ?>
                 <div class="thumbnail-list">
                     <div class="thumbnail-item active">
-                        <img src="<?php echo clean($product['image_url']); ?>" alt="صورة 1" onclick="changeImage('<?php echo clean($product['image_url']); ?>')">
+                        <img src="<?php echo clean($product['image_url']); ?>" alt="صورة 1">
                     </div>
                     <?php foreach ($additionalImages as $img): ?>
                     <div class="thumbnail-item">
-                        <img src="<?php echo clean($img['image_url']); ?>" alt="صورة" onclick="changeImage('<?php echo clean($img['image_url']); ?>')">
+                        <img src="<?php echo clean($img['image_url']); ?>" alt="صورة">
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -315,5 +310,8 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
             <p class="copyright">&copy; <?php echo date('Y'); ?> PYRASTORE - جميع الحقوق محفوظة</p>
         </div>
     </footer>
+
+    <!-- Product Page JavaScript -->
+    <script src="/assets/js/product.js"></script>
 </body>
 </html>
