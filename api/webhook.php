@@ -195,17 +195,29 @@ try {
     $productId = $db->lastInsertId();
 
     // إضافة الصور الإضافية
+    $imagesAdded = 0;
     if (!empty($input['additionalImages']) && is_array($input['additionalImages'])) {
         $imgStmt = $db->prepare("INSERT INTO product_images (product_id, image_url, display_order) VALUES (?, ?, ?)");
         foreach ($input['additionalImages'] as $index => $imageUrl) {
-            $imgStmt->execute([$productId, $imageUrl, $index + 1]);
+            // Validate URL before inserting
+            if (!empty($imageUrl) && filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+                try {
+                    $imgStmt->execute([$productId, $imageUrl, $index + 1]);
+                    $imagesAdded++;
+                } catch (PDOException $e) {
+                    error_log("Failed to insert additional image for product $productId: " . $e->getMessage());
+                }
+            } else {
+                error_log("Invalid image URL skipped for product $productId: " . var_export($imageUrl, true));
+            }
         }
     }
 
     sendJsonResponse([
         'success' => true,
         'message' => 'تم إضافة المنتج بنجاح',
-        'product_id' => $productId
+        'product_id' => $productId,
+        'additional_images_added' => $imagesAdded
     ], 201);
 
 } catch (PDOException $e) {
