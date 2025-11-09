@@ -99,6 +99,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             $error = 'حدث خطأ: ' . $e->getMessage();
         }
+    } elseif ($action === 'bulk_delete') {
+        $ids = $_POST['product_ids'] ?? [];
+        if (!empty($ids) && is_array($ids)) {
+            $deletedCount = 0;
+            try {
+                $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
+                foreach ($ids as $id) {
+                    $id = intval($id);
+                    if ($id > 0) {
+                        $stmt->execute([$id]);
+                        $deletedCount++;
+                    }
+                }
+                $message = "تم حذف $deletedCount منتج بنجاح";
+            } catch (Exception $e) {
+                $error = 'حدث خطأ: ' . $e->getMessage();
+            }
+        } else {
+            $error = 'لم يتم تحديد أي منتجات للحذف';
+        }
     }
 }
 
@@ -280,6 +300,32 @@ if (isset($_GET['edit'])) {
     </form>
 </div>
 
+<!-- Bulk Actions Bar -->
+<div id="bulkActionsBar" class="card" style="display: none; background: #FFF3CD; border: 2px solid #FFC107; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <span id="selectedCount" style="font-weight: 600; color: #856404;">
+                تم تحديد <span id="countNumber">0</span> منتج
+            </span>
+            <button type="button" class="btn btn-sm" style="background: #3B82F6; color: white;" onclick="selectAllProducts()">
+                ✓ تحديد الكل
+            </button>
+            <button type="button" class="btn btn-sm" style="background: #6B7280; color: white;" onclick="deselectAllProducts()">
+                ✗ إلغاء التحديد
+            </button>
+        </div>
+        <div>
+            <form method="POST" id="bulkDeleteForm" style="display: inline;" onsubmit="return confirmBulkDelete()">
+                <input type="hidden" name="action" value="bulk_delete">
+                <div id="bulkDeleteIds"></div>
+                <button type="submit" class="btn btn-danger">
+                    🗑️ حذف المحدد
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Products List -->
 <div class="card">
     <div class="card-header">
@@ -290,6 +336,9 @@ if (isset($_GET['edit'])) {
         <table>
             <thead>
                 <tr>
+                    <th style="width: 40px; text-align: center;">
+                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleAllCheckboxes(this)" title="تحديد/إلغاء تحديد الكل">
+                    </th>
                     <th>الصورة</th>
                     <th>العنوان</th>
                     <th>الفئة</th>
@@ -302,6 +351,9 @@ if (isset($_GET['edit'])) {
             <tbody>
                 <?php foreach ($products as $p): ?>
                 <tr>
+                    <td style="text-align: center;">
+                        <input type="checkbox" class="product-checkbox" value="<?php echo $p['id']; ?>" onchange="updateBulkActions()">
+                    </td>
                     <td><img src="<?php echo clean($p['image_url']); ?>" class="product-thumb"></td>
                     <td><?php echo clean(truncateText($p['title'], 50)); ?></td>
                     <td><span class="badge badge-info"><?php echo getCategoryNameAr($p['category']); ?></span></td>
@@ -336,5 +388,100 @@ if (isset($_GET['edit'])) {
         </table>
     </div>
 </div>
+
+<script>
+// تحديث شريط الإجراءات الجماعية
+function updateBulkActions() {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
+    const count = checkedBoxes.length;
+
+    // إظهار/إخفاء شريط الإجراءات
+    const bulkActionsBar = document.getElementById('bulkActionsBar');
+    if (count > 0) {
+        bulkActionsBar.style.display = 'block';
+    } else {
+        bulkActionsBar.style.display = 'none';
+    }
+
+    // تحديث العدد
+    document.getElementById('countNumber').textContent = count;
+
+    // تحديث checkboxات التحديد الكلي
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    if (count === checkboxes.length && count > 0) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+    } else if (count > 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+    } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    }
+
+    // تحديث الـ hidden inputs للنموذج
+    updateHiddenInputs(checkedBoxes);
+}
+
+// تحديث المدخلات المخفية بمعرفات المنتجات المحددة
+function updateHiddenInputs(checkedBoxes) {
+    const container = document.getElementById('bulkDeleteIds');
+    container.innerHTML = '';
+
+    checkedBoxes.forEach(checkbox => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'product_ids[]';
+        input.value = checkbox.value;
+        container.appendChild(input);
+    });
+}
+
+// تبديل جميع الـ checkboxes
+function toggleAllCheckboxes(source) {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = source.checked;
+    });
+    updateBulkActions();
+}
+
+// تحديد جميع المنتجات
+function selectAllProducts() {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateBulkActions();
+}
+
+// إلغاء تحديد جميع المنتجات
+function deselectAllProducts() {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateBulkActions();
+}
+
+// تأكيد الحذف الجماعي
+function confirmBulkDelete() {
+    const count = document.querySelectorAll('.product-checkbox:checked').length;
+
+    if (count === 0) {
+        alert('يرجى تحديد منتج واحد على الأقل للحذف');
+        return false;
+    }
+
+    const message = `هل أنت متأكد من حذف ${count} منتج؟\n\nهذا الإجراء لا يمكن التراجع عنه!`;
+    return confirm(message);
+}
+
+// تهيئة الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    updateBulkActions();
+});
+</script>
 
 <?php include '_footer.php'; ?>
