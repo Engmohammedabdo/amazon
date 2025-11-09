@@ -157,6 +157,51 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 
                     <h1 class="product-detail-title"><?php echo clean($product['title']); ?></h1>
 
+                    <!-- Trust Signals: Star Rating & Sales Volume -->
+                    <?php if ($product['star_rating'] || $product['sales_volume']): ?>
+                        <div class="trust-signals" style="display: flex; align-items: center; gap: 1rem; margin: 0.75rem 0; flex-wrap: wrap;">
+                            <?php if ($product['star_rating']): ?>
+                                <div class="amazon-rating" style="display: flex; align-items: center; gap: 0.5rem; background: #FFF3CD; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #FFE69C;">
+                                    <div class="rating-stars" style="color: #FFA500; font-size: 1rem;">
+                                        <?php
+                                        $rating = floatval($product['star_rating']);
+                                        $fullStars = floor($rating);
+                                        $hasHalfStar = ($rating - $fullStars) >= 0.5;
+
+                                        for ($i = 0; $i < 5; $i++) {
+                                            if ($i < $fullStars) {
+                                                echo '<i class="fas fa-star"></i>';
+                                            } elseif ($i == $fullStars && $hasHalfStar) {
+                                                echo '<i class="fas fa-star-half-alt"></i>';
+                                            } else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <span style="font-weight: 600; color: #856404;">
+                                        <?php echo number_format($product['star_rating'], 1); ?>/5
+                                    </span>
+                                    <span style="color: #856404; font-size: 0.9rem;">
+                                        تقييم أمازون
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($product['sales_volume'] && $product['sales_volume'] > 0): ?>
+                                <div class="sales-badge" style="display: flex; align-items: center; gap: 0.5rem; background: #FFE5E5; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #FFCCCC;">
+                                    <span style="font-size: 1.2rem;">🔥</span>
+                                    <span style="font-weight: 600; color: #C92A2A;">
+                                        <?php echo number_format($product['sales_volume']); ?>+
+                                    </span>
+                                    <span style="color: #C92A2A; font-size: 0.9rem;">
+                                        تم شراؤه مؤخراً
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <?php if (count($reviews) > 0): ?>
                         <div class="review-rating">
                             <?php for ($i = 0; $i < 5; $i++): ?>
