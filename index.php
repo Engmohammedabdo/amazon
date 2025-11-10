@@ -21,6 +21,7 @@ $productCounts = getProductCountByCategory();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>PYRASTORE - UAE PICKS - أفضل المنتجات من أمازون الإمارات</title>
     <meta name="description" content="اكتشف أفضل المنتجات من أمازون الإمارات بأسعار مميزة وخصومات رائعة. إلكترونيات، أزياء، منزل، رياضة، جمال وأكثر">
 
@@ -75,6 +76,9 @@ $productCounts = getProductCountByCategory();
     // Load tracking pixels (TikTok, Meta, Google Analytics)
     include_once __DIR__ . '/includes/tracking.php';
     ?>
+
+    <!-- UTM Parameter Tracker -->
+    <script src="/assets/js/utm-tracker.js"></script>
 </head>
 <body>
     <!-- Header -->

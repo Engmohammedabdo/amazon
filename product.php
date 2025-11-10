@@ -61,6 +61,7 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title><?php echo $pageTitle; ?></title>
     <meta name="description" content="<?php echo htmlspecialchars(mb_substr(strip_tags($product['description']), 0, 155)); ?>">
 
@@ -128,6 +129,9 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     // Load tracking pixels (TikTok, Meta, Google Analytics)
     include_once __DIR__ . '/includes/tracking.php';
     ?>
+
+    <!-- UTM Parameter Tracker -->
+    <script src="/assets/js/utm-tracker.js"></script>
 
     <script>
         // Track purchase button click and open affiliate link

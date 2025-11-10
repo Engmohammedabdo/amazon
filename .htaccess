@@ -52,6 +52,9 @@ ExpiresByType application/pdf "access plus 1 month"
 # Allow search engines to index
 Header always set X-Robots-Tag "index, follow"
 
+# Referrer Policy for Analytics Tracking
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
 # Basic security
 Header set X-Content-Type-Options "nosniff"
 Header set X-Frame-Options "SAMEORIGIN"

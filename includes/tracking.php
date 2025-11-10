@@ -52,7 +52,14 @@ src="https://www.facebook.com/tr?id=<?php echo htmlspecialchars($metaPixelId, EN
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>');
+  gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>', {
+    'cookie_flags': 'SameSite=None;Secure',
+    'allow_google_signals': true,
+    'allow_ad_personalization_signals': true,
+    'linker': {
+      'domains': ['events.pyramedia.info']
+    }
+  });
 </script>
 <?php endif; ?>
 
