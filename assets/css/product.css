@@ -1008,3 +1008,161 @@ a:focus-visible {
     text-align: right;
 }
 
+/* ==================== Product Description Styling ==================== */
+.product-description {
+    line-height: 1.8;
+    color: #333333;
+    font-size: 1rem;
+    padding: 1.5rem 0;
+}
+
+/* Headings */
+.product-description h1,
+.product-description h2,
+.product-description h3,
+.product-description h4 {
+    font-weight: 700;
+    margin: 25px 0 15px 0;
+    color: #1a1a1a;
+    border-right: 4px solid #FF6B35;
+    padding-right: 15px;
+    line-height: 1.4;
+}
+
+.product-description h1 { font-size: 1.6rem; }
+.product-description h2 { font-size: 1.5rem; }
+.product-description h3 { font-size: 1.3rem; }
+.product-description h4 { font-size: 1.2rem; }
+
+/* Paragraphs */
+.product-description p {
+    margin-bottom: 15px;
+    text-align: justify;
+    color: #333333;
+}
+
+/* Lists */
+.product-description ul,
+.product-description ol {
+    margin: 20px 0;
+    padding-right: 25px;
+}
+
+.product-description ul {
+    list-style: none;
+}
+
+.product-description ul li {
+    margin-bottom: 12px;
+    padding-right: 25px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.product-description ul li:before {
+    content: "✓";
+    color: #FF6B35;
+    font-weight: bold;
+    font-size: 1.1rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.product-description ol {
+    list-style-position: outside;
+    list-style-type: decimal;
+}
+
+.product-description ol li {
+    margin-bottom: 12px;
+    padding-right: 10px;
+}
+
+/* Strong/Bold */
+.product-description strong,
+.product-description b {
+    color: #FF6B35;
+    font-weight: 600;
+}
+
+/* Emphasis */
+.product-description em,
+.product-description i {
+    color: #6B7280;
+    font-style: italic;
+}
+
+/* Links */
+.product-description a {
+    color: #FF6B35;
+    text-decoration: underline;
+}
+
+.product-description a:hover {
+    color: #E55A2B;
+}
+
+/* Blockquotes */
+.product-description blockquote {
+    border-right: 3px solid #FF6B35;
+    padding-right: 15px;
+    margin: 20px 0;
+    color: #6B7280;
+    font-style: italic;
+}
+
+/* Code */
+.product-description code {
+    background: #F9FAFB;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .product-description h1,
+    .product-description h2,
+    .product-description h3 {
+        font-size: 1.2rem;
+        margin: 20px 0 12px 0;
+    }
+
+    .product-description {
+        font-size: 0.95rem;
+    }
+}
+
+/* RTL/LTR Support */
+[dir="ltr"] .product-description h1,
+[dir="ltr"] .product-description h2,
+[dir="ltr"] .product-description h3 {
+    border-right: none;
+    border-left: 4px solid #FF6B35;
+    padding-right: 0;
+    padding-left: 15px;
+}
+
+[dir="ltr"] .product-description ul {
+    padding-right: 0;
+    padding-left: 25px;
+}
+
+[dir="ltr"] .product-description ul li {
+    padding-right: 0;
+    padding-left: 25px;
+}
+
+[dir="ltr"] .product-description ul li:before {
+    right: auto;
+    left: 0;
+}
+
+[dir="ltr"] .product-description blockquote {
+    border-right: none;
+    border-left: 3px solid #FF6B35;
+    padding-right: 0;
+    padding-left: 15px;
+}

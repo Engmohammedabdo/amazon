@@ -277,7 +277,15 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         <!-- Description Section -->
         <div class="description-section">
             <h2 class="section-title"><?php echo t('product_description'); ?></h2>
-            <div class="product-description"><?php echo clean($product['description']); ?></div>
+            <div class="product-description">
+                <?php
+                // Allow HTML but sanitize for security
+                $description = $product['description'];
+                // Remove dangerous tags but keep formatting
+                $allowed_tags = '<h1><h2><h3><h4><h5><h6><p><strong><b><em><i><ul><ol><li><br><a><blockquote><code>';
+                echo strip_tags($description, $allowed_tags);
+                ?>
+            </div>
         </div>
 
         <!-- Video Section -->
