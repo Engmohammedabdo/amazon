@@ -246,7 +246,7 @@ function displayProducts(products) {
             </div>
             <div class="product-content">
                 <h3 class="product-title">${escapeHtml(product.title)}</h3>
-                <p class="product-description">${escapeHtml(truncateText(product.description, 100))}</p>
+                <p class="product-description">${escapeHtml(truncateText(stripHtml(product.description), 100))}</p>
                 <div class="product-pricing">
                     <div class="product-price">
                         ${formatPrice(product.price)} ${window.TRANSLATIONS.currency}
@@ -404,6 +404,13 @@ if (heroSection) {
 }
 
 // ==================== Helper Functions ====================
+// Strip HTML tags from text
+function stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+}
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
