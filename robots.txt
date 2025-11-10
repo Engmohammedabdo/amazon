@@ -1,0 +1,20 @@
+# PyraStore UAE - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Block admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /includes/
+
+# Allow images and CSS/JS for proper rendering
+Allow: /assets/
+Allow: /uploads/
+
+# Crawl delay (optional - be nice to server)
+Crawl-delay: 1
+
+# Sitemap location (we'll add this later)
+Sitemap: https://events.pyramedia.info/sitemap.xml
