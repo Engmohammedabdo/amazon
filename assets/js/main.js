@@ -231,7 +231,13 @@ function displayProducts(products) {
     const container = document.getElementById('productsContainer');
 
     const html = products.map((product, index) => `
-        <div class="product-card fade-in-up" style="animation-delay: ${index * 0.1}s" onclick="viewProduct(${product.id})">
+        <div class="product-card fade-in-up"
+             style="animation-delay: ${index * 0.1}s"
+             onclick="viewProduct(${product.id})"
+             data-product-id="${product.id}"
+             data-product-title="${escapeHtml(product.title)}"
+             data-product-price="${product.price}"
+             data-product-category="${escapeHtml(product.category)}">
             <div class="product-image-wrapper">
                 <img src="${escapeHtml(product.image_url)}"
                      alt="${escapeHtml(product.title)}"
@@ -644,3 +650,101 @@ if (document.getElementById('stickyCTAProduct') && window.innerWidth < 768) {
   stickyBar.classList.add('show');
   document.body.classList.add('has-sticky-cta');
 }
+
+// ==================== Enhanced Tracking Integration ====================
+
+// Update product card display to include tracking data attributes
+function addTrackingAttributesToCards() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const productId = card.dataset.productId;
+        const productTitle = card.dataset.productTitle;
+        const price = card.dataset.productPrice;
+        const category = card.dataset.productCategory;
+
+        // Track product impression when card is visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && typeof trackProductView === 'function') {
+                    trackProductView(productId, productTitle, price, category);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(card);
+    });
+}
+
+// Enhanced buyNow function with tracking
+const originalBuyNow = window.buyNow;
+window.buyNow = function(event, productId, affiliateLink) {
+    // Get product data from card
+    const card = event.target.closest('.product-card');
+    const productTitle = card?.dataset.productTitle || card?.querySelector('.product-title')?.textContent || 'Unknown';
+    const priceText = card?.dataset.productPrice || card?.querySelector('.product-price')?.textContent || '0';
+    const price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+    const category = card?.dataset.productCategory || 'Unknown';
+
+    // Track the affiliate click
+    if (typeof trackAffiliateClick === 'function') {
+        trackAffiliateClick(productId, productTitle, price, category, affiliateLink);
+    }
+
+    // Call original function if it exists
+    if (originalBuyNow) {
+        originalBuyNow(event, productId, affiliateLink);
+    } else {
+        // Fallback: open affiliate link
+        event.stopPropagation();
+        window.open(affiliateLink, '_blank', 'noopener,noreferrer');
+    }
+};
+
+// Track search with debouncing
+let searchTrackingTimeout;
+const originalHandleSearchInput = window.handleSearchInput;
+window.handleSearchInput = function() {
+    if (originalHandleSearchInput) {
+        originalHandleSearchInput();
+    }
+
+    clearTimeout(searchTrackingTimeout);
+    searchTrackingTimeout = setTimeout(() => {
+        const searchQuery = document.getElementById('searchInput')?.value;
+        if (searchQuery && typeof trackSearch === 'function') {
+            const resultsCount = document.querySelectorAll('.product-card:not(.skeleton)').length;
+            trackSearch(searchQuery, resultsCount);
+        }
+    }, 1000);
+};
+
+// Track category changes
+const originalSetCategory = window.setCategory;
+window.setCategory = function(category) {
+    if (originalSetCategory) {
+        originalSetCategory(category);
+    }
+
+    if (typeof trackCategoryClick === 'function') {
+        const productCount = document.querySelectorAll('.product-card:not(.skeleton)').length;
+        trackCategoryClick(category, productCount);
+    }
+};
+
+// Track discount filter
+const originalSetDiscount = window.setDiscount;
+window.setDiscount = function(discount) {
+    if (originalSetDiscount) {
+        originalSetDiscount(discount);
+    }
+
+    if (typeof trackDiscountFilter === 'function') {
+        trackDiscountFilter(discount);
+    }
+};
+
+// Initialize tracking on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add tracking to existing product cards
+    setTimeout(addTrackingAttributesToCards, 1000);
+});
