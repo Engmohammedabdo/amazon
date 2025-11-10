@@ -132,6 +132,90 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
             navigator.clipboard.writeText(window.location.href);
         }
     </script>
+
+    <!-- Schema.org Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": <?php echo json_encode($product['title']); ?>,
+      "image": [
+        <?php echo json_encode($product['image_url']); ?>
+        <?php foreach ($additionalImages as $img): ?>
+        ,<?php echo json_encode($img['image_url']); ?>
+        <?php endforeach; ?>
+      ],
+      "description": <?php echo json_encode(strip_tags($product['description'])); ?>,
+      "sku": <?php echo json_encode('PYRA-' . $product['id']); ?>,
+      "brand": {
+        "@type": "Brand",
+        "name": "Amazon UAE"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": <?php echo json_encode('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>,
+        "priceCurrency": "AED",
+        "price": <?php echo json_encode($product['price']); ?>,
+        "priceValidUntil": <?php echo json_encode(date('Y-m-d', strtotime('+30 days'))); ?>,
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": {
+          "@type": "Organization",
+          "name": "PyraStore UAE"
+        }
+      }
+      <?php if (!empty($product['star_rating']) && !empty($product['sales_volume'])): ?>
+      ,"aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": <?php echo json_encode($product['star_rating']); ?>,
+        "reviewCount": <?php echo json_encode($product['sales_volume']); ?>,
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+      <?php endif; ?>
+    }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": <?php echo json_encode('https://' . $_SERVER['HTTP_HOST'] . '/'); ?>
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": <?php echo json_encode(getCategoryName($product['category'])); ?>,
+          "item": <?php echo json_encode('https://' . $_SERVER['HTTP_HOST'] . '/?category=' . $product['category']); ?>
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": <?php echo json_encode($product['title']); ?>
+        }
+      ]
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "PyraStore UAE",
+      "url": <?php echo json_encode('https://' . $_SERVER['HTTP_HOST']); ?>,
+      "logo": <?php echo json_encode('https://' . $_SERVER['HTTP_HOST'] . '/assets/images/logo.png'); ?>,
+      "sameAs": [
+        "https://www.tiktok.com/@pyrastore"
+      ]
+    }
+    </script>
 </head>
 <body>
     <header class="site-header">
