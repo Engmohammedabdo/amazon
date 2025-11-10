@@ -52,51 +52,45 @@ src="https://www.facebook.com/tr?id=<?php echo htmlspecialchars($metaPixelId, EN
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>', {
+
+  // Extract UTM parameters BEFORE initial config
+  const urlParams = new URLSearchParams(window.location.search);
+  const utmSource = urlParams.get('utm_source');
+  const utmMedium = urlParams.get('utm_medium');
+  const utmCampaign = urlParams.get('utm_campaign');
+  const utmContent = urlParams.get('utm_content');
+  const utmTerm = urlParams.get('utm_term');
+
+  // Configure GA4 with UTM parameters (if exist) in CORRECT GA4 format
+  const gaConfig = {
     'cookie_flags': 'SameSite=None;Secure',
     'allow_google_signals': true,
     'allow_ad_personalization_signals': true,
+    'anonymize_ip': false,  // Show real country (UAE)
     'linker': {
       'domains': ['events.pyramedia.info']
     }
-  });
+  };
 
-  // Extract UTM parameters from URL for immediate GA attribution
-  (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const utmSource = urlParams.get('utm_source');
-    const utmMedium = urlParams.get('utm_medium');
-    const utmCampaign = urlParams.get('utm_campaign');
-    const utmContent = urlParams.get('utm_content');
-    const utmTerm = urlParams.get('utm_term');
+  // Add campaign parameters in GA4 format (flat, not nested)
+  if (utmSource || utmMedium || utmCampaign) {
+    gaConfig.campaign_source = utmSource || '(not set)';
+    gaConfig.campaign_medium = utmMedium || '(not set)';
+    gaConfig.campaign_name = utmCampaign || '(not set)';
+    if (utmContent) gaConfig.campaign_content = utmContent;
+    if (utmTerm) gaConfig.campaign_term = utmTerm;
 
-    // If UTM params exist, reconfigure GA with campaign data
-    if (utmSource || utmMedium || utmCampaign) {
-      gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>', {
-        'cookie_flags': 'SameSite=None;Secure',
-        'allow_google_signals': true,
-        'allow_ad_personalization_signals': true,
-        'linker': {
-          'domains': ['events.pyramedia.info']
-        },
-        'campaign': {
-          'source': utmSource || '(not set)',
-          'medium': utmMedium || '(not set)',
-          'name': utmCampaign || '(not set)',
-          'content': utmContent || '',
-          'term': utmTerm || ''
-        }
-      });
+    console.log('✅ GA4 configured with UTM (CORRECT FORMAT):', {
+      campaign_source: gaConfig.campaign_source,
+      campaign_medium: gaConfig.campaign_medium,
+      campaign_name: gaConfig.campaign_name,
+      campaign_content: gaConfig.campaign_content,
+      campaign_term: gaConfig.campaign_term
+    });
+  }
 
-      console.log('✅ GA configured with UTM:', {
-        source: utmSource,
-        medium: utmMedium,
-        campaign: utmCampaign,
-        content: utmContent,
-        term: utmTerm
-      });
-    }
-  })();
+  // Single gtag config with all parameters
+  gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>', gaConfig);
 </script>
 <?php endif; ?>
 

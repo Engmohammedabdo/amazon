@@ -27,19 +27,10 @@
         }
     });
 
-    // Send UTM data to Google Analytics if available
-    if (Object.keys(utmParams).length > 0 && typeof gtag !== 'undefined') {
-        gtag('event', 'utm_tracking', {
-            event_category: 'Campaign Tracking',
-            utm_source: utmParams.utm_source || '(not set)',
-            utm_medium: utmParams.utm_medium || '(not set)',
-            utm_campaign: utmParams.utm_campaign || '(not set)',
-            utm_content: utmParams.utm_content || '(not set)',
-            utm_term: utmParams.utm_term || '(not set)'
-        });
-
-        // Log to console for debugging (remove in production)
-        console.log('UTM Parameters tracked:', utmParams);
+    // Log UTM parameters for debugging
+    // Note: UTM attribution is now handled directly in tracking.php with correct GA4 format
+    if (Object.keys(utmParams).length > 0) {
+        console.log('📊 UTM Parameters stored in sessionStorage:', utmParams);
     }
 
     // Add UTM parameters to all internal links

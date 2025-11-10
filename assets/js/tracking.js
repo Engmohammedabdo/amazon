@@ -222,7 +222,9 @@ function trackDiscountFilter(discountPercent) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Enhanced tracking initialized');
 
-    // Track page view
+    // Note: Automatic page_view is already sent by GA4 in tracking.php
+    // We don't send a duplicate custom page_view event here
+    // Only server-side tracking for page views (without GA event)
     trackEvent('page_view', {
         category: 'Navigation',
         metadata: {
