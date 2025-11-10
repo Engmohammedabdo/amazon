@@ -25,8 +25,8 @@ RewriteBase /
 # Allow robots.txt
 RewriteRule ^robots\.txt$ - [L]
 
-# Allow sitemap.xml
-RewriteRule ^sitemap\.xml$ - [L]
+# Redirect sitemap.xml to dynamic sitemap
+RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
 </IfModule>
 
 # Compression for better performance

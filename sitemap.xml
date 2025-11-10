@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!-- This is a static fallback. For the dynamic sitemap, visit sitemap.xml.php -->
+<!-- The .htaccess file redirects this to the dynamic version automatically -->
+
+    <url>
+        <loc>https://events.pyramedia.info/</loc>
+        <lastmod>2025-11-10T12:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+</urlset>
