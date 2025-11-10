@@ -60,6 +60,43 @@ src="https://www.facebook.com/tr?id=<?php echo htmlspecialchars($metaPixelId, EN
       'domains': ['events.pyramedia.info']
     }
   });
+
+  // Extract UTM parameters from URL for immediate GA attribution
+  (function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source');
+    const utmMedium = urlParams.get('utm_medium');
+    const utmCampaign = urlParams.get('utm_campaign');
+    const utmContent = urlParams.get('utm_content');
+    const utmTerm = urlParams.get('utm_term');
+
+    // If UTM params exist, reconfigure GA with campaign data
+    if (utmSource || utmMedium || utmCampaign) {
+      gtag('config', '<?php echo htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8'); ?>', {
+        'cookie_flags': 'SameSite=None;Secure',
+        'allow_google_signals': true,
+        'allow_ad_personalization_signals': true,
+        'linker': {
+          'domains': ['events.pyramedia.info']
+        },
+        'campaign': {
+          'source': utmSource || '(not set)',
+          'medium': utmMedium || '(not set)',
+          'name': utmCampaign || '(not set)',
+          'content': utmContent || '',
+          'term': utmTerm || ''
+        }
+      });
+
+      console.log('✅ GA configured with UTM:', {
+        source: utmSource,
+        medium: utmMedium,
+        campaign: utmCampaign,
+        content: utmContent,
+        term: utmTerm
+      });
+    }
+  })();
 </script>
 <?php endif; ?>
 
