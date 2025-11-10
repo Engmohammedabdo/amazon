@@ -22,7 +22,37 @@ $productCounts = getProductCountByCategory();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PYRASTORE - UAE PICKS - أفضل المنتجات من أمازون الإمارات</title>
-    <meta name="description" content="اكتشف أفضل المنتجات من أمازون الإمارات بأسعار مميزة وخصومات رائعة">
+    <meta name="description" content="اكتشف أفضل المنتجات من أمازون الإمارات بأسعار مميزة وخصومات رائعة. إلكترونيات، أزياء، منزل، رياضة، جمال وأكثر">
+
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="أمازون الإمارات, تسوق أونلاين, منتجات أمازون, خصومات, إلكترونيات, أزياء, PyraStore, Amazon UAE, online shopping">
+    <meta name="author" content="PyraStore UAE">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . '/'); ?>">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . '/'); ?>">
+    <meta property="og:title" content="PYRASTORE - أفضل منتجات أمازون الإمارات بأسعار مميزة">
+    <meta property="og:description" content="تسوق أفضل المنتجات من أمازون الإمارات مع خصومات حصرية. إلكترونيات، أزياء، منزل، رياضة، جمال والمزيد. اكتشف عروضنا اليوم!">
+    <meta property="og:image" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . '/assets/images/og-image.jpg'); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="PyraStore UAE">
+    <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ar' ? 'ar_AE' : 'en_US'; ?>">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . '/'); ?>">
+    <meta name="twitter:title" content="PYRASTORE - أفضل منتجات أمازون الإمارات">
+    <meta name="twitter:description" content="تسوق أفضل المنتجات من أمازون الإمارات مع خصومات حصرية. إلكترونيات، أزياء، منزل والمزيد!">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . '/assets/images/og-image.jpg'); ?>">
+
+    <!-- Additional SEO -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PyraStore">
+    <meta name="theme-color" content="#FF6B35">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

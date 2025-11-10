@@ -62,7 +62,49 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle; ?></title>
-    <meta name="description" content="<?php echo clean(truncateText($product['description'], 150)); ?>">
+    <meta name="description" content="<?php echo htmlspecialchars(mb_substr(strip_tags($product['description']), 0, 155)); ?>">
+
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="<?php echo htmlspecialchars($product['title'] . ', Amazon UAE, ' . getCategoryName($product['category']) . ', PyraStore'); ?>">
+    <meta name="author" content="PyraStore UAE">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($product['title']); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars(mb_substr(strip_tags($product['description']), 0, 200)); ?>">
+    <meta property="og:image" content="<?php echo htmlspecialchars($product['image_url']); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="PyraStore UAE">
+    <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ar' ? 'ar_AE' : 'en_US'; ?>">
+
+    <!-- Product Price for Facebook/Pinterest -->
+    <meta property="product:price:amount" content="<?php echo $product['price']; ?>">
+    <meta property="product:price:currency" content="AED">
+    <?php if ($product['original_price'] && $product['original_price'] > $product['price']): ?>
+    <meta property="product:sale_price:amount" content="<?php echo $product['price']; ?>">
+    <meta property="product:original_price:amount" content="<?php echo $product['original_price']; ?>">
+    <?php endif; ?>
+    <meta property="product:availability" content="in stock">
+    <meta property="product:condition" content="new">
+    <meta property="product:retailer_item_id" content="<?php echo $product['id']; ?>">
+    <meta property="product:brand" content="Amazon UAE">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?php echo htmlspecialchars('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($product['title']); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars(mb_substr(strip_tags($product['description']), 0, 200)); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($product['image_url']); ?>">
+    <meta name="twitter:label1" content="Price">
+    <meta name="twitter:data1" content="<?php echo formatPrice($product['price']); ?> AED">
+    <?php if ($product['discount_percentage']): ?>
+    <meta name="twitter:label2" content="Save">
+    <meta name="twitter:data2" content="<?php echo $product['discount_percentage']; ?>%">
+    <?php endif; ?>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
