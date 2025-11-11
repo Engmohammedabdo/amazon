@@ -539,11 +539,31 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
 
     <?php include __DIR__ . '/includes/social_popup.php'; ?>
 
+    <!-- Pass social media URLs to JavaScript -->
+    <script>
+        <?php
+        $fbUrl = getSetting('facebook_url');
+        $ttUrl = getSetting('tiktok_url');
+        $igUrl = getSetting('instagram_url');
+        $hasSocial = !empty($fbUrl) || !empty($ttUrl) || !empty($igUrl);
+        if ($hasSocial):
+        ?>
+        window.SOCIAL_URLS = {
+            facebook: <?php echo json_encode($fbUrl); ?>,
+            tiktok: <?php echo json_encode($ttUrl); ?>,
+            instagram: <?php echo json_encode($igUrl); ?>
+        };
+        <?php endif; ?>
+    </script>
+
     <!-- Enhanced Tracking System -->
     <script src="/assets/js/tracking.js"></script>
 
     <!-- Social Media Integration -->
     <script src="/assets/js/social-media.js"></script>
+
+    <!-- Floating Social Media Button (Mobile) -->
+    <script src="/assets/js/floating-social.js"></script>
 
     <!-- Main JavaScript -->
     <script src="/assets/js/main.js"></script>
