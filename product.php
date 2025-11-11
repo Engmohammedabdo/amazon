@@ -535,6 +535,8 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
         </div>
     </footer>
 
+    <?php include __DIR__ . '/includes/social_sticky.php'; ?>
+
     <!-- Enhanced Tracking System -->
     <script src="/assets/js/tracking.js"></script>
 

@@ -223,6 +223,8 @@ $productCounts = getProductCountByCategory();
         </div>
     </footer>
 
+    <?php include __DIR__ . '/includes/social_sticky.php'; ?>
+
     <!-- Pass translations to JavaScript -->
     <script>
         window.TRANSLATIONS = {
