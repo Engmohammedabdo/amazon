@@ -225,6 +225,8 @@ $productCounts = getProductCountByCategory();
 
     <?php include __DIR__ . '/includes/social_sticky.php'; ?>
 
+    <?php include __DIR__ . '/includes/social_popup.php'; ?>
+
     <!-- Pass translations to JavaScript -->
     <script>
         window.TRANSLATIONS = {
