@@ -218,6 +218,8 @@ $productCounts = getProductCountByCategory();
             <p class="copyright">
                 &copy; <?php echo date('Y'); ?> PYRASTORE - <?php echo t('all_rights_reserved'); ?>
             </p>
+
+            <?php include __DIR__ . '/includes/social_footer.php'; ?>
         </div>
     </footer>
 
@@ -251,6 +253,9 @@ $productCounts = getProductCountByCategory();
 
     <!-- Enhanced Tracking System -->
     <script src="/assets/js/tracking.js"></script>
+
+    <!-- Social Media Integration -->
+    <script src="/assets/js/social-media.js"></script>
 
     <!-- Main JavaScript -->
     <script src="/assets/js/main.js"></script>
