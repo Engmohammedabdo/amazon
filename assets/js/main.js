@@ -791,3 +791,69 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial check
     handleHeaderScroll();
 })();
+
+// ==================== Category Scroll Indicator ====================
+(function() {
+    const categoryFilters = document.querySelector('.category-filters');
+    const dots = document.querySelectorAll('.scroll-dot');
+
+    if (!categoryFilters || dots.length === 0) return;
+
+    // Update active dot based on scroll position
+    function updateScrollDots() {
+        const scrollLeft = categoryFilters.scrollLeft;
+        const scrollWidth = categoryFilters.scrollWidth;
+        const clientWidth = categoryFilters.clientWidth;
+        const maxScroll = scrollWidth - clientWidth;
+
+        if (maxScroll <= 0) {
+            // No scrolling needed, show first dot as active
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === 0);
+            });
+            return;
+        }
+
+        // Calculate which dot should be active (0-4)
+        const scrollPercentage = scrollLeft / maxScroll;
+        const activeDotIndex = Math.round(scrollPercentage * (dots.length - 1));
+
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeDotIndex);
+        });
+    }
+
+    // Scroll to position when dot is clicked
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', function() {
+            const scrollWidth = categoryFilters.scrollWidth;
+            const clientWidth = categoryFilters.clientWidth;
+            const maxScroll = scrollWidth - clientWidth;
+
+            // Calculate target scroll position
+            const targetScroll = (maxScroll / (dots.length - 1)) * index;
+
+            categoryFilters.scrollTo({
+                left: targetScroll,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Listen to scroll events
+    let scrollTimeout;
+    categoryFilters.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateScrollDots, 50);
+    });
+
+    // Initial update
+    updateScrollDots();
+
+    // Update on window resize
+    window.addEventListener('resize', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateScrollDots, 100);
+    });
+})();

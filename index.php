@@ -116,7 +116,10 @@ $productCounts = getProductCountByCategory();
             </div>
 
             <!-- Category Filters -->
-            <div class="category-filters">
+            <div class="category-scroll-container">
+                <div class="category-scroll-fade-left"></div>
+                <div class="category-scroll-fade-right"></div>
+                <div class="category-filters">
                 <button class="category-btn" onclick="setCategory('')">
                     <span><i class="fas fa-th"></i> <?php echo t('category_all'); ?></span>
                     <span class="category-count"><?php echo array_sum($productCounts); ?></span>
@@ -149,6 +152,16 @@ $productCounts = getProductCountByCategory();
                     <span><i class="fas fa-gamepad"></i> <?php echo t('category_toys'); ?></span>
                     <span class="category-count"><?php echo $productCounts['toys'] ?? 0; ?></span>
                 </button>
+                </div>
+
+                <!-- Scroll Indicator Dots -->
+                <div class="category-scroll-dots">
+                    <span class="scroll-dot" data-index="0"></span>
+                    <span class="scroll-dot" data-index="1"></span>
+                    <span class="scroll-dot" data-index="2"></span>
+                    <span class="scroll-dot" data-index="3"></span>
+                    <span class="scroll-dot" data-index="4"></span>
+                </div>
             </div>
 
             <!-- Advanced Filters -->
