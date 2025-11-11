@@ -100,6 +100,13 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('gtm_container_id', ''),
 ('meta_pixel_id', ''),
 ('tiktok_pixel_id', ''),
+('facebook_url', ''),
+('tiktok_url', ''),
+('instagram_url', ''),
+('social_popup_enabled', '1'),
+('social_popup_delay', '60'),
+('social_popup_title', 'Stay Connected!'),
+('social_popup_message', 'Follow us for exclusive deals'),
 ('site_name', 'PYRASTORE'),
 ('site_tagline', 'UAE PICKS'),
 ('site_description', 'أفضل المنتجات من أمازون الإمارات بأسعار مميزة');
