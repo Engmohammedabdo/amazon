@@ -281,6 +281,9 @@ $productCounts = getProductCountByCategory();
     <!-- Floating Social Media Button (Mobile) -->
     <script src="/assets/js/floating-social.js"></script>
 
+    <!-- Search Autocomplete -->
+    <script src="/assets/js/search-autocomplete.js"></script>
+
     <!-- Main JavaScript -->
     <script src="/assets/js/main.js"></script>
 </body>
