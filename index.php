@@ -81,6 +81,8 @@ $productCounts = getProductCountByCategory();
     <script src="/assets/js/utm-tracker.js"></script>
 </head>
 <body>
+    <?php outputGTMBodyNoscript(); ?>
+
     <!-- Header -->
     <header class="site-header">
         <div class="container">

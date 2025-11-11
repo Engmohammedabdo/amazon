@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('api_key', 'pyrastore-webhook-2025'),
 ('google_analytics_id', 'G-3TRP9PJ0GT'),
+('gtm_container_id', ''),
 ('meta_pixel_id', ''),
 ('tiktok_pixel_id', ''),
 ('site_name', 'PYRASTORE'),

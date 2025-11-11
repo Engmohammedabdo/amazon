@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'tracking') {
         updateSetting('google_analytics_id', trim($_POST['ga_id'] ?? ''));
+        updateSetting('gtm_container_id', trim($_POST['gtm_id'] ?? ''));
         updateSetting('meta_pixel_id', trim($_POST['meta_pixel_id'] ?? ''));
         updateSetting('tiktok_pixel_id', trim($_POST['tiktok_pixel_id'] ?? ''));
         $message = 'تم حفظ إعدادات التتبع بنجاح';
@@ -32,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $gaId = getSetting('google_analytics_id');
+$gtmId = getSetting('gtm_container_id');
 $metaPixelId = getSetting('meta_pixel_id');
 $tiktokPixelId = getSetting('tiktok_pixel_id');
 $apiKey = getSetting('api_key');
@@ -66,6 +68,12 @@ $apiKey = getSetting('api_key');
                 <label>Google Analytics ID</label>
                 <input type="text" name="ga_id" class="form-control" placeholder="G-XXXXXXXXXX" value="<?php echo clean($gaId); ?>">
                 <small style="color: #666;">مثال: G-XXXXXXXXXX</small>
+            </div>
+
+            <div class="form-group">
+                <label>Google Tag Manager ID</label>
+                <input type="text" name="gtm_id" class="form-control" placeholder="GTM-XXXXXXX" value="<?php echo clean($gtmId); ?>">
+                <small style="color: #666;">مثال: GTM-XXXXXXX (للإدارة المتقدمة للتتبع)</small>
             </div>
 
             <div class="form-group">

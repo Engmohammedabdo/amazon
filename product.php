@@ -270,6 +270,8 @@ $pageTitle = clean($product['title']) . ' - PYRASTORE';
     </script>
 </head>
 <body>
+    <?php outputGTMBodyNoscript(); ?>
+
     <header class="site-header">
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
