@@ -1464,3 +1464,68 @@ button {
     display: none !important;
   }
 }
+
+/* ==================== Sticky Header on Scroll ==================== */
+.site-header {
+  transition: all 0.3s ease-in-out;
+}
+
+.site-header.header-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(51, 51, 51, 0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header-sticky .site-logo h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.header-sticky .site-tagline,
+.header-sticky .site-description {
+  display: none;
+}
+
+.header-sticky .container {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Mobile sticky header adjustments */
+@media (max-width: 768px) {
+  .site-header.header-sticky {
+    padding: 0.3rem 0;
+  }
+
+  .header-sticky .site-logo h1 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Add padding to body when header is sticky to prevent content jump */
+body.header-is-sticky {
+  padding-top: 80px;
+}
+
+@media (max-width: 768px) {
+  body.header-is-sticky {
+    padding-top: 60px;
+  }
+}

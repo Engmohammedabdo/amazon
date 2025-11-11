@@ -748,3 +748,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add tracking to existing product cards
     setTimeout(addTrackingAttributesToCards, 1000);
 });
+
+// ==================== Sticky Header on Scroll ====================
+(function() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    const stickyThreshold = 150;
+    let lastScrollTop = 0;
+    let ticking = false;
+
+    function handleHeaderScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > stickyThreshold) {
+            if (!header.classList.contains('header-sticky')) {
+                header.classList.add('header-sticky');
+                document.body.classList.add('header-is-sticky');
+            }
+        } else {
+            if (header.classList.contains('header-sticky')) {
+                header.classList.remove('header-sticky');
+                document.body.classList.remove('header-is-sticky');
+            }
+        }
+
+        lastScrollTop = scrollTop;
+        ticking = false;
+    }
+
+    // Throttle scroll event with requestAnimationFrame
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                handleHeaderScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Initial check
+    handleHeaderScroll();
+})();
